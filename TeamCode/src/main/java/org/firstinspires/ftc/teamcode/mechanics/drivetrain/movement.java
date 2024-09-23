@@ -14,6 +14,10 @@ public class movement {
     public wheel fr;
     public wheel bl;
     public wheel br;
+
+    public int breaking_distance = 12;
+    public int turn_breaking_distance = 18;
+
     public movement(HardwareMap hardwareMap) {
         odo.setOffsets(-84.0, -168.0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -39,6 +43,31 @@ public class movement {
         double x_f = p.getX(DistanceUnit.INCH);
         double y_f = p.getY(DistanceUnit.INCH);
         double h_f = p.getHeading(AngleUnit.DEGREES);
+        double x_vel = -1.0;
+        double y_vel = -1.0;
+        double h_vel = -1.0;
+
+        if (Math.abs(x_f - x) < breaking_distance) {
+            x_vel = (x_f - x)/breaking_distance;
+        }
+        else if ((x_f-x) > 0) {
+            x_vel = 1.0;
+        }
+
+        if (Math.abs(y_f - y) < breaking_distance) {
+            y_vel = (y_f - y)/breaking_distance;
+        }
+        else if ((y_f-y) > 0) {
+            y_vel = 1.0;
+        }
+
+        if (Math.abs(h_f - heading) < turn_breaking_distance) {
+            h_vel = (h_f - heading)/turn_breaking_distance;
+        }
+        else if ((h_f - heading) > 0) {
+            h_vel = 1.0;
+        }
+        move(x_vel, y_vel, h_vel);
 
     }
 
