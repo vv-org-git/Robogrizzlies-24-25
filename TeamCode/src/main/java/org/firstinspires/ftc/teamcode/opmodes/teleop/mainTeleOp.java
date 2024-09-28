@@ -37,6 +37,12 @@ public class mainTeleOp extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()) {
+            if (gamepad1.left_stick_button) {
+                robot.movement.moveToAsync(0, 24, 0);
+            }
+            else if (gamepad1.right_stick_button) {
+                robot.movement.moveToAsync(24, 36, 135);
+            }
             robot.movement.move(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             if (gamepad1.left_bumper) {
