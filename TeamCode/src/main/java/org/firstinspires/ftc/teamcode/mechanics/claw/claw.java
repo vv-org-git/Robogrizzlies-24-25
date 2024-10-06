@@ -19,6 +19,7 @@ public class claw {
     public static double z_servo_center = 0;
     public static double z_servo_up = 0;
     public static double z_servo_down = 0;
+    public static double degree_constant = 6.28;
 
 
 
@@ -46,8 +47,8 @@ public class claw {
         this.release();
     }
 
-    public void rotate(double amount) {x_servo.setPosition(x_servo.getPosition() + amount);}
-    public void rotate_z(double amount) {z_servo.setPosition(z_servo.getPosition() + amount);}
+    public void rotate(double amount) {x_servo.setPosition(x_servo.getPosition() + amount/degree_constant);}
+    public void rotate_z(double amount) {z_servo.setPosition(z_servo.getPosition() + amount/degree_constant);}
 
     public void reset_x() {x_servo.setPosition(x_servo_center);}
     public void reset_z() {z_servo.setPosition(z_servo_center);}

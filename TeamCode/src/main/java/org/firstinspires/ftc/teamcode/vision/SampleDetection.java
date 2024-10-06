@@ -26,6 +26,7 @@ public class SampleDetection extends OpenCvPipeline {
     public int angle_delta = 0;
     public int x_delta = 0;
     public int y_delta = 0;
+    public boolean run_continuous = false;
 
 
     private Telemetry telemetry;
@@ -76,7 +77,7 @@ public class SampleDetection extends OpenCvPipeline {
             // MatOfPoint2f contour1 =  new MatOfPoint2f(arr);
             // Imgproc.minAreaRect(contour1);
 
-            run = false;
+            run = run_continuous;
             return draw;
         }
         return input;

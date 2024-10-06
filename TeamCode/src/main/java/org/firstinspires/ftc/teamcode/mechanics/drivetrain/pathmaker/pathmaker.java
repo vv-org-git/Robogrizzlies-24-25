@@ -16,13 +16,11 @@ public class pathmaker {
         } else if ((x_f - x) > 0) {
             x_vel = 1.0;
         }
-
         if (Math.abs(y_f - y) < breaking_distance) {
             y_vel = (y_f - y) / breaking_distance;
         } else if ((y_f - y) > 0) {
             y_vel = 1.0;
         }
-
         if (Math.abs(h_f - heading) < turn_breaking_distance) {
             h_vel = (h_f - heading) / turn_breaking_distance;
         } else if ((h_f - heading) > 0) {
