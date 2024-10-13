@@ -10,13 +10,12 @@ public class utility_motor {
 
 
 
-
     public utility_motor(HardwareMap hardwareMap, String loc, boolean reverse) {
         motor = hardwareMap.get(DcMotor.class, loc);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (reverse) {
@@ -25,18 +24,15 @@ public class utility_motor {
     }
     public void setPower(double p) {
         motor.setPower(Range.clip(p, -1, 1));
+
     }
     public double getPower() {
         return motor.getPower();
     }
 
-    public void setPosition(int t) {
-        while (motor.getCurrentPosition() - t != 0) {
-            if (motor.getCurrentPosition() - t > 0) {this.setPower(1.0); }
-            else {this.setPower(-1.0);}
-        }
-    }
-    public void setPlace(double up_ticks) {
-        this.setPower(up_ticks);
+    public void setPlace(int t) {
+        motor.setTargetPosition(t);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(1);
     }
 }

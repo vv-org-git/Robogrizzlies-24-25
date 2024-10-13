@@ -8,17 +8,13 @@ public class machine {
     LinearOpMode l;
     public machine(LinearOpMode l0) {l = l0;}
 
-    public void run(boolean left) {
-        robot robot = new robot(l);
+    public void run(boolean left, robot robot, paths path) {
         if (left) {
             robot.movement.init_x_offset = - 12.0;
         }
-        paths path = new paths(robot);
-        path.place_specimen_1();
-        path.open_claw();
+
         int n_states = path.states.size();
         int current_state = 0;
-        boolean first_achieved = false;
         if(l.isStopRequested()) return;
         path.states.get(current_state).run();
         while (l.opModeIsActive() && !l.isStopRequested() && current_state < n_states) {

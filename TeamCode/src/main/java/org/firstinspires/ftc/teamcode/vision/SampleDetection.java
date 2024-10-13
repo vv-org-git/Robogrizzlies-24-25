@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class SampleDetection extends OpenCvPipeline {
-    public int width = 480;
-    public int length = 720;
-    public boolean run = false;
+    public int width = 240;
+    public int length = 360;
+    public boolean run = true;
     public int angle_delta = 0;
     public int x_delta = 0;
     public int y_delta = 0;
-    public boolean run_continuous = false;
-
+    public boolean run_continuous = true;
+    public int threshold = 120;
 
     private Telemetry telemetry;
 
@@ -40,45 +40,75 @@ public class SampleDetection extends OpenCvPipeline {
         if (run) {
             Mat dst = new Mat(input.rows(), input.cols(), input.type());
             input.copyTo(dst);
-            Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2GRAY);
-            Imgproc.blur(dst, dst, new Size(3, 3));
-            Imgproc.threshold(dst, dst, 100, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.cvtColor(input, dst, Imgproc.COLOR_BGR2HSV);
+ /*
+            int lowerSaturation = 5;
+            Scalar lowerBound = new Scalar(0, 40, 0);
+            Scalar upperBound = new Scalar(180, 255, 255);
+            Mat mask = new Mat();
+            Mat r = new Mat();
+
+            Core.inRange(dst, lowerBound, upperBound, mask);
+            Core.bitwise_and(dst, dst, r, mask);
+
+
+            Mat new_mask = new Mat();
+            if (averageHSV.val[0] > 140) {
+                 lowerBound = new Scalar(140, lowerSaturation, 50);
+                 upperBound = new Scalar(180, 255, 255);
+
+            }
+            else if (averageHSV.val[0] > 50) {
+                lowerBound = new Scalar(50, lowerSaturation, 50);
+                upperBound = new Scalar(140, 255, 255);
+            }
+            else {
+                lowerBound = new Scalar(0, lowerSaturation, 50);
+                upperBound = new Scalar(50, 255, 255);
+            }
+            Core.inRange(dst, lowerBound, upperBound, new_mask);
+            Core.bitwise_and(dst, dst, dst, new_mask);
+ *
+ */
+
+            //Imgproc.cvtColor(r, r, Imgproc.COLOR_HSV2BGR); // Convert to BGR first
+            //Imgproc.cvtColor(r, dst, Imgproc.COLOR_BGR2GRAY);
+            Mat r = new Mat();
+            Core.extractChannel(dst, r, 1);
+            Core.extractChannel(dst, dst, 2);
+            // r.convertTo(r, -1, 2.0, 0);
+            Mat addedImage = new Mat();
+            Core.add(dst, r, addedImage);
+            dst = addedImage;
+            Imgproc.blur(dst, dst, new Size(6, 6));
+            Imgproc.threshold(dst, dst, threshold, 255, Imgproc.THRESH_BINARY);
 
             final List<MatOfPoint> points = new ArrayList<>();
             final Mat hierarchy = new Mat();
             Imgproc.findContours(dst, points, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-            telemetry.addData("size: ", points.size());
-
 
             for (int i = 1; i < points.size(); i++) {
                 MatOfPoint2f contour1 = new MatOfPoint2f(points.get(i).toArray());
                 RotatedRect minRect = Imgproc.minAreaRect(contour1);
-                if (minRect.center.x > length / 3 && minRect.center.x < 2 * length / 3 && minRect.center.y > width / 3 && minRect.center.y < 2 * width / 3) {
+                if (minRect.size.width < width * 0.75 && minRect.size.width > width * 0.12 && minRect.size.height < length * 0.75 && minRect.size.height > length * 0.12) {
                     x_delta = (int) (minRect.center.x - length / 2);
                     y_delta = (int) (minRect.center.y - width / 2);
                     angle_delta = (int) (minRect.angle);
+                    telemetry.addData("center: ", minRect.center);
+                    telemetry.addData("rotation: ", minRect.angle);
+                    telemetry.addData("width: ", minRect.size.width + " height: " + minRect.size.height);
+                    telemetry.update();
+                    Point[] vertices = new Point[4];
+                    minRect.points(vertices);
+                    for (int k = 0; k < 4; k++) {
+                        Imgproc.line(input, vertices[k], vertices[(k + 1) % 4], new Scalar(0, 0, 255), 2);
+                    }
                     break;
                 }
-                telemetry.addData("center: ", minRect.center);
-                telemetry.addData("rotation: ", minRect.angle);
-                telemetry.addData("width: ", minRect.size.width + " height: " + minRect.size.height);
-                telemetry.update();
-
-
             }
-            Mat draw = Mat.zeros(dst.size(), CvType.CV_8UC3);
-            for (int i = 0; i < points.size(); i++) {
-                Scalar color = new Scalar(0, 0, 255);
-                //Drawing Contours
-                Imgproc.drawContours(draw, points, i, color, 2, Imgproc.LINE_8, hierarchy, 2, new Point());
-            }
-
-            //   MatOfPoint arr = new MatOfPoint(points);
-            // MatOfPoint2f contour1 =  new MatOfPoint2f(arr);
-            // Imgproc.minAreaRect(contour1);
 
             run = run_continuous;
-            return draw;
+            return input;
         }
         return input;
     }

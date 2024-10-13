@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.vision.SampleDetection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker.pathmaker;
 public class movement {
-    GoBildaPinpointDriver odo;
+    public GoBildaPinpointDriver odo;
     double oldTime = 0;
     public wheel fl;
     public wheel fr;

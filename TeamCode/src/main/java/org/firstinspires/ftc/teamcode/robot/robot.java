@@ -14,6 +14,10 @@ public class robot {
     public claw claw;
     public arm arm;
     public webcam webcam;
+    public boolean busy = false;
+    public long set_sleep = 0;
+
+
     public static int m_x = 1;
     public static int m_y = 1;
     public static int m_r = 1;
@@ -37,6 +41,22 @@ public class robot {
         claw.rotate(m_r * samplePipeline.angle_delta + b_r);
     }
     public boolean is_busy() {
-        return (this.movement.is_busy() || this.arm.isBusy());
+        return (this.movement.is_busy() || this.arm.isBusy() || busy);
     }
+
+    public void sleep(long ms) {
+        if (set_sleep == -1) {
+            set_sleep = System.currentTimeMillis() + ms;
+        }
+        else {
+            if (System.currentTimeMillis() > set_sleep) {
+                busy = false;
+                set_sleep = -1;
+            }
+            else {
+                busy = true;
+            }
+        }
+    }
+
 }

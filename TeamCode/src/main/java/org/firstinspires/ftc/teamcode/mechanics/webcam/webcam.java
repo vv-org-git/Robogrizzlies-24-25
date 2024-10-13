@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 public class webcam {
     OpenCvWebcam w;
-    Integer resolution_x = 720;
-    Integer resolution_y = 480;
+    Integer resolution_x = 320;
+    Integer resolution_y = 180;
 
     public webcam(LinearOpMode l) {
         int cameraMonitorViewId = l.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", l.hardwareMap.appContext.getPackageName());
@@ -22,7 +22,6 @@ public class webcam {
     public void startStreaming(OpenCvPipeline pipeline) {
 
         w.setPipeline(pipeline);
-        w.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
         w.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override

@@ -34,22 +34,49 @@ public class mainTeleOp extends LinearOpMode {
         robot = new robot(this);
         samplePipeline = new SampleDetection(telemetry);
         robot.webcam.startStreaming(samplePipeline);
-
+        long init_time = System.currentTimeMillis();
+        int left = -1;
         waitForStart();
         while (!isStopRequested()) {
+            if (gamepad2.x) {
+                left = 1;
+            }
+
+            //Automations
             if (gamepad1.left_stick_button) {
-                robot.movement.moveToAsync(0, 24, 0);
+                robot.arm.basket();
+                robot.movement.moveToAsync(-48, 24,-135);
+                robot.claw.basket();
+                continue;
             }
             else if (gamepad1.right_stick_button) {
-                robot.movement.moveToAsync(24, 36, 135);
+                long x = (long) 24 * (System.currentTimeMillis()-init_time)/(60*2*1000);
+                robot.arm.high_bar();
+                robot.movement.moveToAsync(x * left, 24,-135);
+                robot.claw.high_bar();
+                continue;
             }
-            robot.movement.move(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            else if (gamepad1.left_bumper) {
+                robot.arm.reverse_ground();
+                robot.claw.ground_pick_up_reverse();
+                robot.movement.moveToAsync(48, 24,0);
+                continue;
+            }
+            else if (gamepad1.right_bumper) {
+                robot.arm.ground();
+                robot.claw.reset_z();
+                robot.claw.reset_x();
+                robot.movement.moveToAsync(12 * left, 24,0);
+                continue;
+            }
 
-            if (gamepad1.left_bumper) {
-                robot.claw.rotate(-0.1);
+            robot.movement.move(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            //driver control
+            if (gamepad1.left_bumper && gamepad1.start) {
+                robot.claw.rotate(1);
             }
-            if (gamepad1.right_bumper) {
-                robot.claw.rotate(-0.1);
+            if (gamepad1.right_bumper && gamepad1.start) {
+                robot.claw.rotate(-1);
             }
             if (gamepad1.right_trigger > 0.3) {
                 robot.claw.bite();
@@ -58,12 +85,16 @@ public class mainTeleOp extends LinearOpMode {
                 robot.claw.release();
             }
             if (gamepad1.y) {
+                robot.claw.reset_z();
                 robot.arm.extend();
             }
             if (gamepad1.a) {
+                robot.claw.reset_z();
+                robot.claw.reset_x();
                 robot.arm.retract();
             }
             if (gamepad1.x) {
+                robot.claw.reset_z();
                 robot.arm.down();
             }
             if (gamepad1.b) {
