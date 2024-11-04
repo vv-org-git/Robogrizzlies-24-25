@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.mechanics.drivetrain;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.Pose2D;
-import org.firstinspires.ftc.teamcode.vision.SampleDetection;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker.pathmaker;
 public class movement {
@@ -26,16 +24,18 @@ public class movement {
 
     public double init_x_offset = 12.0;
 
-    public movement(LinearOpMode l) {
+    public movement(LinearOpMode l, double x, double y, double z ) {
+        odo = l.hardwareMap.get(GoBildaPinpointDriver.class, "imu");
         odo.setOffsets(-84.0, -168.0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.resetPosAndIMU();
+        odo.setPosition(new Pose2D(DistanceUnit.INCH, x, y,AngleUnit.DEGREES, z));
 
-        fl = new wheel(l.hardwareMap, "lr");
-        fr = new wheel(l.hardwareMap, "fr");
-        bl = new wheel(l.hardwareMap, "bl");
-        br = new wheel(l.hardwareMap, "br");
+        fl = new wheel(l.hardwareMap, "FL", true);
+        fr = new wheel(l.hardwareMap, "FR", false);
+        bl = new wheel(l.hardwareMap, "BL", false);
+        br = new wheel(l.hardwareMap, "BR", true);
     }
 
     public boolean is_busy(){
@@ -45,11 +45,11 @@ public class movement {
 
     public void move(double l_x, double l_y, double r_x){
         double horizontal = l_x;
-        double vertical = l_y;
-        double turn = - r_x;
-        fl.setPower(vertical + horizontal + turn);
-        fr.setPower(vertical - horizontal - turn);
-        bl.setPower(vertical - horizontal + turn);
+        double vertical = -l_y;
+        double turn =  r_x;
+        fl.setPower(vertical - horizontal - turn);
+        fr.setPower(vertical - horizontal + turn);
+        bl.setPower(vertical + horizontal + turn);
         br.setPower(vertical + horizontal - turn);
     }
     public  void moveTo(double x, double y, double heading) {

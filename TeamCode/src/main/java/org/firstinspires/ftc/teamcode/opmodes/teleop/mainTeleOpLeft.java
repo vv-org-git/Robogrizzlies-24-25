@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
 
 @Config
-@TeleOp(name="mainTeleOp", group="Driver OP")
-public class mainTeleOp extends LinearOpMode {
+@TeleOp(name="mainTeleOpLeft", group="Driver OP")
+public class mainTeleOpLeft extends LinearOpMode {
     public static double AUTO_END_X = 10;
     public static double AUTO_END_Y = 10;
     public static double AUTO_END_Z = 10;

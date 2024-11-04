@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanics.arm.arm;
 import org.firstinspires.ftc.teamcode.mechanics.claw.claw;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.movement;
 import org.firstinspires.ftc.teamcode.mechanics.webcam.webcam;
-import org.firstinspires.ftc.teamcode.vision.SampleDetection;
+import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
 public class robot {
     public movement movement;
@@ -26,13 +25,13 @@ public class robot {
     public static int b_y = 1;
     public static int b_r = 1;
     LinearOpMode l;
-    public robot(LinearOpMode l){
-        movement = new movement(l);
+    public robot(LinearOpMode l, double x, double y, double z){
+        movement = new movement(l, x, y, z);
         arm = new arm(l);
         claw = new claw(l);
         webcam = new webcam(l);
     }
-    public void alignment(SampleDetection samplePipeline) {
+    public void alignment(SampleDetectionRect samplePipeline) {
         samplePipeline.run = true;
         while (samplePipeline.run) {
             l.sleep(50);

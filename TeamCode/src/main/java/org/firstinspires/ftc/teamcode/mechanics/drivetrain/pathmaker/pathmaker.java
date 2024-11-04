@@ -29,4 +29,11 @@ public class pathmaker {
         return new double[] {x_vel, y_vel, h_vel};
     }
 
+
+    public static double[] unit_clip(double x_f, double y_f, double h_f){
+        double k = Math.max(x_f, Math.max(y_f, h_f));
+        return new double[] {x_f/k, y_f/k, h_f/k};
+    }
+
+
 }

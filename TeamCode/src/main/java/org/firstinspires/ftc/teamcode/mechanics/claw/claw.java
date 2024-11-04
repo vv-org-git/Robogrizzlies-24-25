@@ -19,11 +19,16 @@ public class claw {
     public static double x_constant = 180;
     public static double z_constant = 180;
 
+    public static double x_left = -1.0;
+    public static double x_right = 0.7;
+
+    public static double x_center = -0.15;
+
 
 
     Servo claw_servo;
-    public static double claw_open = 0;
-    public static double claw_close = 0;
+    public static double claw_open = 0.5;
+    public static double claw_close = 0.2;
 
     public static double claw_z_high_bar = 136;
     public static double claw_z_basket = 148;
@@ -34,7 +39,7 @@ public class claw {
         z_servo = l.hardwareMap.get(Servo.class, "claw_z");
         claw_servo = l.hardwareMap.get(Servo.class, "claw_servo");
 
-        x_servo.setPosition(0);
+        x_servo.setPosition(x_center);
         z_servo.setPosition(0);
         claw_servo.setPosition(claw_open);
 
@@ -45,20 +50,20 @@ public class claw {
 
 
     public void high_bar() {
-        x_servo.setPosition(0);
+        x_servo.setPosition(x_center);
         z_servo.setPosition(claw_z_high_bar/z_constant);
     }
     public void basket() {
-        x_servo.setPosition(0);
+        x_servo.setPosition(x_center);
         z_servo.setPosition(claw_z_basket/z_constant);
     }
 
     public void ground_pick_up() {
-        x_servo.setPosition(0);
+        x_servo.setPosition(x_center);
         z_servo.setPosition(90/z_constant);
     }
     public void ground_pick_up_reverse() {
-        x_servo.setPosition(0);
+        x_servo.setPosition(x_center);
         z_servo.setPosition(-90/z_constant);
     }
 
@@ -72,7 +77,7 @@ public class claw {
     public void rotate(double amount) {x_servo.setPosition(x_servo.getPosition() + amount/x_constant);}
     public void rotate_z(double amount) {z_servo.setPosition(z_servo.getPosition() + amount/z_constant);}
 
-    public void reset_x() {x_servo.setPosition(0);}
+    public void reset_x() {x_servo.setPosition(x_center);}
     public void reset_z() {z_servo.setPosition(0);}
 
 
