@@ -30,7 +30,7 @@ public class paths {
     }
     public void park_right() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsync(60, 12,0));
+        t.add(() -> robot.movement.moveToAsync(63, 9,0));
         t.add(() -> robot.claw.release());
         t.add(() -> robot.arm.retract());
 
@@ -38,7 +38,7 @@ public class paths {
     }
     public void park_left() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsync(-60, 12,0));
+        t.add(() -> robot.movement.moveToAsync(-63, 9,0));
         t.add(() -> robot.claw.release());
         t.add(() -> robot.arm.retract());
 
