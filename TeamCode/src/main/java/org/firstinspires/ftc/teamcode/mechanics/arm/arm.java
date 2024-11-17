@@ -22,7 +22,9 @@ public class arm {
     public static int high_bar_rotation = 46;
     public static int high_bar_height = 38;
 
-    public static int ground_pick_up = 22;
+    public static int ground_pick_up = 24;
+    public static int ground_pick_up_rev = 14;
+
 
     public static int ticks_per_inch_ex = 300;
     public static int ticks_per_inch_r = 300;
@@ -55,9 +57,13 @@ public class arm {
         rotator.setPlace(0);
     }
     public void reverse_ground() {
-        extender.setPlace(ground_pick_up * ticks_per_inch_ex);
+        extender.setPlace(ground_pick_up_rev * ticks_per_inch_ex);
         rotator.setPlace(180 * ticks_per_inch_r);
     }
+
+    public void setExtPos(double in){extender.setPlace((int) in*ticks_per_inch_r);}
+    public void setRotPos(double deg){rotator.setPlace((int) deg*ticks_per_inch_r);}
+
 
 
     public void retract() {extender.setPlace(0);}

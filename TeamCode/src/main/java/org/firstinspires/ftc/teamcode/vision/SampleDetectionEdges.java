@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.vision;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -36,14 +38,14 @@ public class SampleDetectionEdges extends OpenCvPipeline {
 
 
     public boolean run_continuous = true;
-    public int threshold = 5;
-    public int threshold_z = 200;
+    public int threshold = 100;
+    public int threshold_z = 120;
     public double prev_x = -1;
     public double prev_y = -1;
     public double prev_a = -1;
     public ArrayList<Double[]> prev_val = new ArrayList<Double[]>();
 
-
+    public int color = 0;
 
     private Telemetry telemetry;
 
@@ -56,6 +58,8 @@ public class SampleDetectionEdges extends OpenCvPipeline {
         prev_a = -1;
         prev_val = new ArrayList<Double[]>();
     }
+    public void setColor(int c){color = c;}
+
     @Override
     public Mat processFrame(Mat input) {
         if (run) {
@@ -65,12 +69,19 @@ public class SampleDetectionEdges extends OpenCvPipeline {
             Mat k1 = new Mat(input.rows(), input.cols(), input.type());
 
             input.copyTo(dst);
+            //Imgproc.cvtColor(dst, dst, Imgproc.COLOR_BGR2HSV);
 
-            Imgproc.cvtColor(dst, dst, Imgproc.COLOR_BGR2GRAY);
+            Mat hueChannel = new Mat();
+            Core.extractChannel(dst, dst, color); // 0 is the index for the Hue channel
+            dst.copyTo(hueChannel);
+
+            // Normalize the hue channel to make it more visible (optional)
+            Mat normalizedHue = new Mat();
+            Core.normalize(dst, dst, 0, 255, Core.NORM_MINMAX, CvType.CV_8U);
+
             Imgproc.blur(dst, dst, new Size(3, 3));
             Imgproc.threshold(dst, dst, threshold_z, 255, Imgproc.THRESH_TOZERO);
             Mat i2 = new Mat(input.rows(), input.cols(), input.type());
-            dst.copyTo(i2);
             Imgproc.threshold(dst, dst, threshold, 255, Imgproc.THRESH_BINARY);
 
 
@@ -144,6 +155,13 @@ public class SampleDetectionEdges extends OpenCvPipeline {
                 // Draw the rectangle on the image
                 //Imgproc.rectangle(input, boundingRect.tl(), boundingRect.br(), new Scalar(0, 255, 0), 2);
 
+                prev_val.add(new Double[] {(longestStart.x + longestEnd.x)/2, (longestStart.y + longestEnd.y)/2, Math.atan((longestEnd.y - longestStart.y)/(longestEnd.x - longestStart.x))});
+                if (prev_val.size() > 5) {
+                    telemetry.addData("k",  getResult()[2]);
+
+                }
+                telemetry.addData("p",  Math.atan((longestEnd.y - longestStart.y)/(longestEnd.x - longestStart.x))/ (3.14) * 180);
+                telemetry.update();
                 // Imgproc.rectangle(input, longestStart, secondLongestEnd, new Scalar(0, 255, 0), 2);
                 //Imgproc.rectangle(input, secondLongestStart, longestEnd, new Scalar(0, 255, 0), 2);
                 Imgproc.line(k1, longestStart, longestEnd, new Scalar(255, 255, 255), 2);
@@ -151,6 +169,7 @@ public class SampleDetectionEdges extends OpenCvPipeline {
                 Imgproc.line(k1, thirdLongestStart, thirdLongestEnd, new Scalar(255, 255, 255), 2); // Green color, thickness 2
                 Imgproc.line(k1, fourthLongestStart, fourthLongestEnd, new Scalar(255, 255, 255), 2); // Green color, thickness 2
             }
+            /*
             Imgproc.cvtColor(k1, k1, Imgproc.COLOR_BGR2GRAY);
             Imgproc.threshold(k1, k1, 240, 255, Imgproc.THRESH_TOZERO);
 
@@ -180,15 +199,17 @@ public class SampleDetectionEdges extends OpenCvPipeline {
                 for (int i = 0; i < 4; i++) {
                     Imgproc.line(input, boxPoints[i], boxPoints[(i + 1) % 4], new Scalar(0, 255, 0), 2);
                 }
-                prev_val.add(new Double[] {minAreaRect.center.x, minAreaRect.center.y, minAreaRect.angle});
 
             }
+
+             */
+
             if (prev_val.size() >= iter_num) {
                 run = run_continuous;
 
 
             }
-            return input;
+            return k1;
         }
         return input;
     }

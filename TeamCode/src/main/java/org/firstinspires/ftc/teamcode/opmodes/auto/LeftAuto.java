@@ -14,15 +14,23 @@ public class LeftAuto extends LinearOpMode {
         paths path = new paths(r);
         path.place_specimen_1();
         path.release();
+
+        path.move_ground_sample_outer();
+        path.bite();
+        path.move_to_basket_with_block();
+        path.release();
+
         path.move_ground_sample_middle();
         path.bite();
         path.move_to_basket_with_block();
         path.release();
-        path.move_ground_sample_inner();
+
         path.move_ground_sample_inner();
         path.bite();
         path.move_to_basket_with_block();
         path.release();
+
+        path.park_left();
 
         machine.run( true, r, path);
     }

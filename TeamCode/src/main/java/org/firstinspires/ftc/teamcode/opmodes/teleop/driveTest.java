@@ -40,7 +40,11 @@ public class driveTest extends LinearOpMode {
                 continue;
             }
             else if (gamepad1.right_bumper) {
-                movement.moveToAsync(12 , 24,0);
+                movement.moveToAsync(0 , 24,0);
+                continue;
+            }
+            else if (gamepad1.x) {
+                movement.moveToAsync(0 , 0,90);
                 continue;
             }
             movement.move(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);

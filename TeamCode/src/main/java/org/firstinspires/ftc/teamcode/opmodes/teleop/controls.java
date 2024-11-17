@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.robot;
+import org.firstinspires.ftc.teamcode.vision.SampleDetectionEdges;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
 public class controls {
@@ -10,8 +11,8 @@ public class controls {
     LinearOpMode op;
     public int left = -1;
     long init_time;
-    SampleDetectionRect samplePipeline;
-    public controls(robot r, LinearOpMode l, long t, SampleDetectionRect s){
+    SampleDetectionEdges samplePipeline;
+    public controls(robot r, LinearOpMode l, long t, SampleDetectionEdges s){
         robot = r;
         op = l;
         init_time = t;
@@ -21,7 +22,15 @@ public class controls {
         if (op.gamepad2.x) {
             left = 1;
         }
-
+        if (op.gamepad2.a) {
+            samplePipeline.setColor(0);
+        }
+        if (op.gamepad2.y) {
+            samplePipeline.setColor(1);
+        }
+        if (op.gamepad2.b) {
+            samplePipeline.setColor(2);
+        }
         //Automations
         if (op.gamepad1.left_stick_button) {
             robot.arm.basket();
@@ -32,21 +41,16 @@ public class controls {
         else if (op.gamepad1.right_stick_button) {
             long x = (long) 24 * (System.currentTimeMillis()-init_time)/(60*2*1000);
             robot.arm.high_bar();
-            robot.movement.moveToAsync(x * left, 24,-135);
+            robot.movement.moveToAsync(x * left, 24,0);
             robot.claw.high_bar();
             return;
         }
         else if (op.gamepad1.left_bumper) {
-            robot.arm.reverse_ground();
-            robot.claw.ground_pick_up_reverse();
-            robot.movement.moveToAsync(48, 24,0);
+            robot.claw.rotate(-5);
             return;
         }
         else if (op.gamepad1.right_bumper) {
-            robot.arm.ground();
-            robot.claw.reset_z();
-            robot.claw.reset_x();
-            robot.movement.moveToAsync(12 * left, 24,0);
+            robot.claw.rotate(5);
             return;
         }
 
@@ -56,7 +60,7 @@ public class controls {
             robot.claw.rotate(1);
         }
         if (op.gamepad1.right_bumper && op.gamepad1.start) {
-            robot.claw.rotate(-1);
+            robot.alignment(samplePipeline);
         }
         if (op.gamepad1.right_trigger > 0.3) {
             robot.claw.bite();
@@ -65,17 +69,18 @@ public class controls {
             robot.claw.release();
         }
         if (op.gamepad1.y) {
-            robot.claw.reset_z();
-            robot.arm.extend();
+            robot.arm.high_bar();
+            robot.claw.reset_x();
+            robot.claw.high_bar();
         }
         if (op.gamepad1.a) {
-            robot.claw.reset_z();
+            robot.arm.basket();
             robot.claw.reset_x();
-            robot.arm.retract();
+            robot.claw.basket();
         }
         if (op.gamepad1.x) {
+            robot.arm.reverse_ground();
             robot.claw.reset_z();
-            robot.arm.down();
         }
         if (op.gamepad1.b) {
             robot.arm.up();

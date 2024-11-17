@@ -32,7 +32,7 @@ public class path_func {
         double dp = v_t[0] * v_v[0] + v_t[1]*v_v[1];
 
         double a_cos = dp/(magnitude(v_t)*magnitude(v_v));
-        return Math.acos(a_cos);
+        return Math.acos(a_cos) /(3.14) * 180;
     }
     public double magnitude(double[] x) {
         double sum = 0;

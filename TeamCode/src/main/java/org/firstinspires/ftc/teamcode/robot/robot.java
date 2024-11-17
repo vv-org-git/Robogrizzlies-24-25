@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.mechanics.arm.arm;
 import org.firstinspires.ftc.teamcode.mechanics.claw.claw;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.movement;
 import org.firstinspires.ftc.teamcode.mechanics.webcam.webcam;
+import org.firstinspires.ftc.teamcode.vision.SampleDetectionEdges;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
 public class robot {
@@ -21,9 +22,9 @@ public class robot {
     public static int m_y = 1;
     public static int m_r = 1;
 
-    public static int b_x = 1;
-    public static int b_y = 1;
-    public static int b_r = 1;
+    public static int b_x = 0;
+    public static int b_y = 0;
+    public static int b_r = 0;
     LinearOpMode l;
     public robot(LinearOpMode l, double x, double y, double z){
         movement = new movement(l, x, y, z);
@@ -31,13 +32,14 @@ public class robot {
         claw = new claw(l);
         webcam = new webcam(l);
     }
-    public void alignment(SampleDetectionRect samplePipeline) {
-        samplePipeline.run = true;
+    public void alignment(SampleDetectionEdges samplePipeline) {
+        samplePipeline.run_main();
         while (samplePipeline.run) {
             l.sleep(50);
         }
-        movement.moveAdditional(m_x * samplePipeline.x_delta + b_x , m_y * samplePipeline.x_delta + b_y, 0);
-        claw.rotate(m_r * samplePipeline.angle_delta + b_r);
+        double[] r = samplePipeline.getResult();
+        //movement.moveAdditional(m_x * r[0] + b_x , m_y * r[1] + b_y, 0);
+        claw.rotate(m_r * r[2] + b_r);
     }
     public boolean is_busy() {
         return (this.movement.is_busy() || this.arm.isBusy() || busy);

@@ -76,6 +76,8 @@ public class claw {
 
     public void rotate(double amount) {x_servo.setPosition(x_servo.getPosition() + amount/x_constant);}
     public void rotate_z(double amount) {z_servo.setPosition(z_servo.getPosition() + amount/z_constant);}
+    public void setX(double amount) {x_servo.setPosition(amount/x_constant);}
+    public void setZ(double amount) {z_servo.setPosition(amount/z_constant);}
 
     public void reset_x() {x_servo.setPosition(x_center);}
     public void reset_z() {z_servo.setPosition(0);}
