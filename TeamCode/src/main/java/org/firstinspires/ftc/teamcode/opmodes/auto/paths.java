@@ -107,7 +107,7 @@ public class paths {
     public void obs_pick_up_specimen() {
         trajectory t = new trajectory();
 
-        t.add(() -> robot.claw.setZ(0));
+        t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.reset_x());
         t.add(() -> robot.arm.reverse_ground());
         t.add(() -> robot.claw.release());
@@ -124,7 +124,7 @@ public class paths {
     public void claw_specimen_pick_up() {
         trajectory t = new trajectory();
 
-        t.add(() -> robot.claw.setZ(0));
+        t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.reset_x());
         t.add(() -> robot.arm.reverse_ground());
         t.add(() -> robot.claw.release());
