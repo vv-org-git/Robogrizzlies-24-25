@@ -1,18 +1,22 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.robot;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionEdges;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
-public class controls {
+@Config
+public class controls3 {
     robot robot;
     LinearOpMode op;
-    public int left = -1;
+    public static double low_bar = 0.3;
+    public static double low_bar_r = 0.4;
+
     long init_time;
     SampleDetectionEdges samplePipeline;
-    public controls(robot r, LinearOpMode l, long t, SampleDetectionEdges s){
+    public controls3(robot r, LinearOpMode l, long t, SampleDetectionEdges s){
         robot = r;
         op = l;
         init_time = t;
@@ -31,6 +35,7 @@ public class controls {
         if (op.gamepad2.x) {
             samplePipeline.setColor(2);
         }*/
+        /*
         //Automations
         if (op.gamepad1.left_stick_button) {
             robot.arm.basket();
@@ -46,10 +51,8 @@ public class controls {
             return;
         }
         else if (op.gamepad1.right_stick_button && op.gamepad1.start) {
-            robot.claw.high_bar();
             robot.claw.reset_x();
             robot.arm.reverse_ground();
-            robot.claw.release();
             robot.movement.moveToAsync(48, 24,0);
             return;
         }
@@ -68,7 +71,7 @@ public class controls {
         else if (op.gamepad1.right_bumper) {
             robot.claw.rotate(5);
             return;
-        }
+        }*/
 
         robot.movement.move(op.gamepad1.left_stick_x, op.gamepad1.left_stick_y, op.gamepad1.right_stick_x);
         //driver control
@@ -86,28 +89,17 @@ public class controls {
             robot.claw.release();
         }
         if (op.gamepad1.y) {
-            robot.arm.high_bar();
-            robot.claw.reset_x();
-            robot.claw.high_bar();
+            robot.arm.setRotPos(low_bar);
         }
+        /*
         if (op.gamepad1.a) {
-            robot.arm.basket();
-            robot.claw.reset_x();
-            robot.claw.basket();
+            robot.arm.setRotPos(0.3);
+        }*/
+        if (op.gamepad1.b) {
+            robot.arm.setRotPos(1.0);
         }
         if (op.gamepad1.x) {
-            robot.arm.down();
-            robot.arm.partial_retract();
-            robot.claw.zUp();
-            robot.claw.reset_x();
-            robot.claw.release();
-        }
-        if (op.gamepad1.b) {
-            robot.arm.partial_retract();
-            robot.arm.up();
-            robot.claw.zUp();
-            robot.claw.reset_x();
-            robot.claw.release();
+            robot.arm.setRotPos(-0.03);
         }
         if (op.gamepad1.dpad_left) {
             robot.claw.reset_x();
@@ -123,15 +115,24 @@ public class controls {
             robot.claw.zDown();
 
         }
+        if (op.gamepad1.left_bumper) {
+            robot.claw.rotate(-5);
+        }
+        if (op.gamepad1.right_bumper) {
+            robot.movement.power = 0.4;
+        }
+        else {
+            robot.movement.power = 1.0;
+        }
 
         //Precise Control
 
         if (op.gamepad1.guide) {
             if (op.gamepad1.y) {
-                robot.arm.setRotatorPower(0.8);
+                robot.arm.setRotatorPower(0.3);
             }
             else if (op.gamepad1.a) {
-                robot.arm.setRotatorPower(-0.8);
+                robot.arm.setRotatorPower(-0.3);
             }
             if (op.gamepad1.b) {
                 robot.arm.setExtenderPower(0.8);

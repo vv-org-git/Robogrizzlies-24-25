@@ -76,6 +76,16 @@ public class paths {
         t.add(() -> robot.movement.moveToAsync(48, 24,0));
         states.add(t);
     }
+    public void strafe_left(double val) {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsync(0, val,0));
+        states.add(t);
+    }
+    public void strafe_forward(double val) {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsync(val, 0,0));
+        states.add(t);
+    }
     public void move_ground_sample_middle_right() {
         trajectory t = new trajectory();
         t.add(() -> robot.arm.ground());

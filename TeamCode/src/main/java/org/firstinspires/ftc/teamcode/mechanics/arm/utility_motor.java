@@ -30,9 +30,9 @@ public class utility_motor {
         return motor.getPower();
     }
 
-    public void setPlace(int t) {
+    public void setPlace(int t, double power) {
         motor.setTargetPosition(t);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(1);
+        motor.setPower(power);
     }
 }

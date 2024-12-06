@@ -22,10 +22,21 @@ public class driveTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry.addData("hello", "helo");
+        telemetry.addData("hello", "helo");
+
         movement = new movement(this, 0, 0, 0);
         long init_time = System.currentTimeMillis();
         waitForStart();
         while (!isStopRequested()) {
+            telemetry.addData("hello", "helo");
+            movement.odo.bulkUpdate();
+            Pose2D p = movement.odo.getPosition();
+
+            telemetry.addData("x", p.getX(DistanceUnit.INCH));
+            telemetry.addData("y", p.getY(DistanceUnit.INCH));
+            telemetry.addData("h", p.getHeading(AngleUnit.DEGREES));
+            telemetry.update();
             if (gamepad1.left_stick_button) {
                 movement.moveToAsync(-48, 24,-135);
                 continue;
@@ -48,10 +59,7 @@ public class driveTest extends LinearOpMode {
                 continue;
             }
             movement.move(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            Pose2D p = movement.odo.getPosition();
-            telemetry.addData("x", p.getX(DistanceUnit.INCH));
-            telemetry.addData("y", p.getY(DistanceUnit.INCH));
-            telemetry.addData("h", p.getHeading(AngleUnit.DEGREES));
+
         }
 
 

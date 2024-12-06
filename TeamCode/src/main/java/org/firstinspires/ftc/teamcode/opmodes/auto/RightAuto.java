@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.robot;
 public class RightAuto extends LinearOpMode {
     public void runOpMode() { //static
         machine machine = new machine(this);
-        robot r = new robot(this,12, 9,0);
+        robot r = new robot(this,12, 9,0, false);
         paths path = new paths(r);
         path.place_specimen_1();
         path.release();

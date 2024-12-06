@@ -19,14 +19,17 @@ public class servoTest extends LinearOpMode {
 
     public static double position = 1.0;
     public static double position2 = -1.0;
+    public static String name = "claw_x";
 
     Servo servo;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        servo = hardwareMap.get(Servo.class, "servo");
+        servo = hardwareMap.get(Servo.class, name);
         waitForStart();
+        servo.setPosition(position2);
         while (!isStopRequested()){
+
             if (gamepad1.left_trigger > 0.3){
                 servo.setPosition(position2);
 

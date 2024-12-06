@@ -6,13 +6,13 @@ import org.firstinspires.ftc.teamcode.robot.robot;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionEdges;
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
-public class controls {
+public class control2 {
     robot robot;
     LinearOpMode op;
     public int left = -1;
     long init_time;
     SampleDetectionEdges samplePipeline;
-    public controls(robot r, LinearOpMode l, long t, SampleDetectionEdges s){
+    public control2(robot r, LinearOpMode l, long t, SampleDetectionEdges s){
         robot = r;
         op = l;
         init_time = t;
@@ -32,20 +32,20 @@ public class controls {
             samplePipeline.setColor(2);
         }*/
         //Automations
-        if (op.gamepad1.left_stick_button) {
+        if (op.gamepad2.left_stick_button) {
             robot.arm.basket();
             robot.movement.moveToAsync(-48, 24,-135);
             robot.claw.basket();
             return;
         }
-        else if (op.gamepad1.right_stick_button) {
+        else if (op.gamepad2.right_stick_button) {
             long x = (long) 24 * (System.currentTimeMillis()-init_time)/(60*2*1000);
             robot.arm.high_bar();
             robot.movement.moveToAsync(x * left, 24,0);
             robot.claw.high_bar();
             return;
         }
-        else if (op.gamepad1.right_stick_button && op.gamepad1.start) {
+        else if (op.gamepad2.right_stick_button && op.gamepad1.start) {
             robot.claw.high_bar();
             robot.claw.reset_x();
             robot.arm.reverse_ground();
@@ -53,7 +53,7 @@ public class controls {
             robot.movement.moveToAsync(48, 24,0);
             return;
         }
-        else if (op.gamepad1.left_stick_button && op.gamepad1.start) {
+        else if (op.gamepad2.left_stick_button && op.gamepad1.start) {
             long x = (long) 24 * (System.currentTimeMillis()-init_time)/(60*2*1000);
             robot.arm.ground();
             robot.claw.release();
@@ -61,11 +61,11 @@ public class controls {
             robot.movement.moveToAsync(x * left, 24,0);
             return;
         }
-        else if (op.gamepad1.left_bumper) {
+        else if (op.gamepad2.left_bumper) {
             robot.claw.rotate(-5);
             return;
         }
-        else if (op.gamepad1.right_bumper) {
+        else if (op.gamepad2.right_bumper) {
             robot.claw.rotate(5);
             return;
         }
@@ -79,47 +79,41 @@ public class controls {
         if (op.gamepad1.right_bumper && op.gamepad1.start) {
             robot.alignment(samplePipeline);
         }*/
-        if (op.gamepad1.right_trigger > 0.3) {
+        if (op.gamepad2.right_trigger > 0.3) {
             robot.claw.bite();
         }
-        if (op.gamepad1.left_trigger > 0.3) {
+        if (op.gamepad2.left_trigger > 0.3) {
             robot.claw.release();
         }
-        if (op.gamepad1.y) {
+        if (op.gamepad2.y) {
             robot.arm.high_bar();
             robot.claw.reset_x();
             robot.claw.high_bar();
         }
-        if (op.gamepad1.a) {
+        if (op.gamepad2.a) {
             robot.arm.basket();
             robot.claw.reset_x();
             robot.claw.basket();
         }
-        if (op.gamepad1.x) {
-            robot.arm.down();
-            robot.arm.partial_retract();
+        if (op.gamepad2.x) {
+            robot.arm.reverse_ground();
             robot.claw.zUp();
             robot.claw.reset_x();
-            robot.claw.release();
         }
-        if (op.gamepad1.b) {
-            robot.arm.partial_retract();
+        if (op.gamepad2.b) {
             robot.arm.up();
-            robot.claw.zUp();
-            robot.claw.reset_x();
-            robot.claw.release();
         }
-        if (op.gamepad1.dpad_left) {
+        if (op.gamepad2.dpad_left) {
             robot.claw.reset_x();
         }
-        if (op.gamepad1.dpad_right) {
+        if (op.gamepad2.dpad_right) {
             robot.claw.reset_z();
         }
-        if (op.gamepad1.dpad_up) {
+        if (op.gamepad2.dpad_up) {
             robot.claw.zUp();
 
         }
-        if (op.gamepad1.dpad_down) {
+        if (op.gamepad2.dpad_down) {
             robot.claw.zDown();
 
         }

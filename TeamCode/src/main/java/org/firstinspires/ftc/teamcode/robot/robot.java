@@ -26,11 +26,13 @@ public class robot {
     public static int b_y = 0;
     public static int b_r = 0;
     LinearOpMode l;
-    public robot(LinearOpMode l, double x, double y, double z){
+    public robot(LinearOpMode l, double x, double y, double z, boolean w){
         movement = new movement(l, x, y, z);
         arm = new arm(l);
         claw = new claw(l);
-        webcam = new webcam(l);
+        if (w) {
+            webcam = new webcam(l);
+        }
     }
     public void alignment(SampleDetectionEdges samplePipeline) {
         samplePipeline.run_main();

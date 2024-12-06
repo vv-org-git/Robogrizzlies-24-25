@@ -7,12 +7,13 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.robot.robot;
 
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionEdges;
+import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
 
 
 @Config
-@TeleOp(name="mainTeleOpLeft", group="Driver OP")
-public class mainTeleOpLeft extends LinearOpMode {
-    public static double AUTO_END_X = -63;
+@TeleOp(name="drive2", group="Driver OP")
+public class drive1 extends LinearOpMode {
+    public static double AUTO_END_X = 63;
     public static double AUTO_END_Y = 9;
     public static double AUTO_END_Z = 0;
 
@@ -23,12 +24,13 @@ public class mainTeleOpLeft extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new robot(this, AUTO_END_X, AUTO_END_Y, AUTO_END_Z, false);
         samplePipeline = new SampleDetectionEdges(telemetry);
-        //robot.webcam.startStreaming(samplePipeline);
+        robot.webcam.startStreaming(samplePipeline);
         long init_time = System.currentTimeMillis();
         controls control = new controls(robot, this,init_time, samplePipeline);
 
         waitForStart();
         while (!isStopRequested()) {
+
             control.action();
         }
 
