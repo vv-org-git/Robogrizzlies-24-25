@@ -102,7 +102,54 @@ public class movement {
             li.telemetry.addData("vh", vels[2]);
             li.telemetry.update();
 
-            move(0.0, 1.0, 0.0);
+            move(vels[0], vels[1], vels[2]);
+        }
+    }
+    public void moveToAsync2(double x, double y, double heading) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double x_f = p.getX(DistanceUnit.INCH);
+        double y_f = p.getY(DistanceUnit.INCH);
+        double h_f = p.getHeading(AngleUnit.DEGREES);
+        li.telemetry.addData("vx1", x_f);
+        li.telemetry.addData("vz1", y_f);
+        li.telemetry.addData("vh1", h_f);
+
+        li.telemetry.addData("vx2", x);
+        li.telemetry.addData("vz2", y);
+        li.telemetry.addData("vh2", heading);
+        li.telemetry.update();
+        if (Math.abs(x_f-x) < allowed_x_err && Math.abs(y_f-y) < allowed_y_err && Math.abs(h_f-heading) < allowed_h_err) {
+            this.move(0,0,0);
+        }
+        else {
+            double x_velocity = -1.0;
+            double y_velocity = -1.0;
+            double h_velocity = -1.0;
+
+            if (Math.abs(x-x_f) < allowed_x_err) {
+                x_velocity = 0.0;
+            }
+            else if (x - x_f > 0 ) {
+                x_velocity = 1.0;
+            }
+
+            if (Math.abs(y-y_f) < allowed_y_err) {
+                y_velocity = 0.0;
+            }
+            else if (y - y_f > 0) {
+                y_velocity = 1.0;
+            }
+
+            if (Math.abs(heading-h_f) < allowed_h_err) {
+                h_velocity = 0.0;
+            }
+            else if (heading - h_f > 0) {
+                h_velocity = 1.0;
+            }
+
+
+            move(x_velocity, y_velocity, h_velocity);
         }
     }
 

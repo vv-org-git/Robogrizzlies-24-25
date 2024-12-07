@@ -20,7 +20,7 @@ public class autoTest2 extends LinearOpMode {
         paths path = new paths(r);
         waitForStart();
         while (!isStopRequested()) {
-            r.movement.moveToAsync(x,y,h);
+            r.movement.moveToAsync2(x,y,h);
         }
     }
 }
