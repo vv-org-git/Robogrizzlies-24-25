@@ -21,5 +21,5 @@ This document specifies the functions and purpose of each program file used in t
 | **servoTest**          | Tests servos for resistance to ensure proper wiring. Press any trigger to set servo position.                                                                                                                                                                                                                                                |
 
 # By the way PLEASE keep updating this whenever these files are touched 
-Thanks
 Jonathan
+:3
