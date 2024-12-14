@@ -13,6 +13,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 @Config
 public class claw {
     Servo x_servo;
+    //useless variable
     public static double x_servo_center = 0;
 
     Servo z_servo;
@@ -26,7 +27,8 @@ public class claw {
     public static double z_down = 0.72;
 
     public static double x_center =0.45;
-
+    public static double z_center = 0.45;
+    //find z_center^
 
 
     Servo claw_servo;
@@ -65,6 +67,7 @@ public class claw {
         z_servo.setPosition(z_down);
         this.release();
     }
+    //useless function
     public void ground_pick_up_reverse() {
         x_servo.setPosition(x_center);
         z_servo.setPosition(z_up);
@@ -80,7 +83,7 @@ public class claw {
     public void rotate(double amount) {x_servo.setPosition(x_servo.getPosition() + amount/x_constant);}
     public void rotate_z(double amount) {z_servo.setPosition(z_servo.getPosition() + amount/z_constant);}
     public void setX(double amount) {x_servo.setPosition(amount/x_constant + x_center);}
-    public void setZ(double amount) {z_servo.setPosition(amount/z_constant);}
+    public void setZ(double amount) {z_servo.setPosition(amount/z_constant);} //useless function
     public void zUp() {
         z_servo.setPosition(z_up);
     }
@@ -89,6 +92,8 @@ public class claw {
     }
 
     public void reset_x() {x_servo.setPosition(x_center);}
+
+    //EXACT SAME FUNCTION AS zDown thus we must find a new variable to pass in, otherwise remove function + usages and cal zDown
     public void reset_z() {z_servo.setPosition(z_down);}
 
 

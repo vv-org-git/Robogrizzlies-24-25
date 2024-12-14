@@ -41,6 +41,7 @@ public class arm {
 
 
     public void extend() {extender.setPower(1.0);}
+    //useless function
     public void extend_mid() {extender.setPlace((int) (mid_height * ticks_per_inch_ex), 1);}
     public void basket() {
         extender.setPlace((int) (basket_height * ticks_per_inch_ex), 1);
