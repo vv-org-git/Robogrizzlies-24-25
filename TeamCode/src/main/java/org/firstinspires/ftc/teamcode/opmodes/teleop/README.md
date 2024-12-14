@@ -4,12 +4,7 @@ This document specifies the functions and purpose of each program file used in t
 
 | **Program File Name**  | **Function Description**                                                                                                                                                                                                                                                                                                                   |
 |------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **armTest**            | A file to override op mode for testing the arm. Functions: A -> Test arm extension speed 
-B -> Test arm rotation speed 
-Right Trigger -> Extend arm 
-Left Trigger -> Retract arm 
-Dpad Up -> Arm Goes Down (might need to change) 
-Dpad Down -> Arm Goes Down.                                                                             |
+| **armTest**            | A file to override op mode for testing the arm. Functions: A -> Test arm extension speed, B -> Test arm rotation speed, Right Trigger -> Extend arm, Left Trigger -> Retract arm, Dpad Up -> Arm Goes Down (might need to change), Dpad Down -> Arm Goes Down.                                                                             |
 | **clawTest**           | A file to override op mode to test the claw. Functions: A -> Test X_servo, B -> Test Z_servo, X -> Claw Release, Y -> Claw Bite.                                                                                                                                                                                                       |
 | **Control2 (requires gamepad2)** | A file for testing a range of controls: Left Stick Button -> Move arm to basket, Right Stick Button -> Automation for high bar, Left Stick Button + Start -> Reach for pile, release claw, move to specific spot, Left Bumper -> Rotate claw left, Right Bumper -> Rotate claw right, Right Trigger -> Bite Claw, Left Trigger -> Release Claw, etc.           |
 | **controls**           | A file for testing a wide range of controls with changes: X -> Arm goes down, Z servo up, reset claw X and release claw, B -> Arm retracts, moves up, reset claw, release claw.                                                                                                                                                             |
