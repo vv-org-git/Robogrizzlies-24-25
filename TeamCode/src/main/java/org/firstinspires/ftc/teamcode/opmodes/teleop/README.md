@@ -19,3 +19,7 @@ This document specifies the functions and purpose of each program file used in t
 | **motorTest**          | Sets motor direction, runs motor with encoder and brake, then moves towards a position.                                                                                                                                                                                                                                                     |
 | **motorTest2**         | Sets motors to reverse and gives them power.                                                                                                                                                                                                                                                                                             |
 | **servoTest**          | Tests servos for resistance to ensure proper wiring. Press any trigger to set servo position.                                                                                                                                                                                                                                                |
+
+# By the way PLEASE keep updating this whenever these files are touched 
+#Thanks
+# - Jonathan
