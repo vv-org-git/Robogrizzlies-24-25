@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class pathmaker {
+public  class  pathmaker {
     public static int breaking_distance = 12;
     public static int turn_breaking_distance = 18;
     public static double[] linear(double x_f, double x, double y_f, double y, double h_f, double heading){
@@ -28,6 +28,10 @@ public class pathmaker {
         }
         return new double[] {x_vel, y_vel, h_vel};
     }
+    public static double[] unit_clip(double x_f, double y_f, double h_f){
+        double k = Math.max(x_f, Math.max(y_f, h_f));
+        return new double[] {x_f/k, y_f/k, h_f/k};
+    }
 
     public static double[] linear2(double x_f, double x, double y_f, double y, double h_f, double heading){
         double x_vel = -1.0;
@@ -43,11 +47,7 @@ public class pathmaker {
         if ((h_f - heading) < 0) {
             h_vel = 1.0;
         }
-        return new double[] {x_vel, y_vel, h_vel};
-    }
-    public static double[] unit_clip(double x_f, double y_f, double h_f){
-        double k = Math.max(x_f, Math.max(y_f, h_f));
-        return new double[] {x_f/k, y_f/k, h_f/k};
+        return pathmaker.unit_clip(x_vel, y_vel, h_vel);
     }
 
 

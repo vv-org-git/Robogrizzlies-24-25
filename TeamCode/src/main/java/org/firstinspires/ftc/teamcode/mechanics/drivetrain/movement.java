@@ -62,6 +62,24 @@ public class movement {
         bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
         br.setPower((vertical + horizontal - turn)*BR_PERCENT*power);
     }
+    public void moveAuto(double l_x, double l_y, double r_x){
+        double horizontal = l_x;
+        double vertical = -l_y;
+        double turn =  r_x;
+        fl.setPower((vertical - horizontal - turn));
+        fr.setPower((vertical - horizontal + turn));
+        bl.setPower((vertical + horizontal + turn));
+        br.setPower((vertical + horizontal - turn));
+    }
+    public void moveAutoTest(double l_x, double l_y, double r_x){
+        double horizontal = l_x;
+        double vertical = -l_y;
+        double turn =  r_x;
+        fl.setPower((vertical - horizontal - turn));
+        fr.setPower((vertical - horizontal + turn));
+        bl.setPower((vertical + horizontal + turn));
+        br.setPower((vertical + horizontal - turn));
+    }
     public  void moveTo(double x, double y, double heading) {
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
@@ -152,7 +170,17 @@ public class movement {
             move(x_velocity, y_velocity, h_velocity);
         }
     }
+    public void moveToAsync3() {
+        double x = 12.0;
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double x_f = p.getX(DistanceUnit.INCH);
+        li.telemetry.addData("vx1", x_f);
 
+        li.telemetry.addData("vx2", x);
+        li.telemetry.update();
+        move(0.0,1.0,0.0);
+    }
     public void moveAdditional(double x, double y, double heading) {
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH)+x;
