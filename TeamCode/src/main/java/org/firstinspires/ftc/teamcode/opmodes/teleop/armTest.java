@@ -32,15 +32,13 @@ public class armTest extends LinearOpMode {
                 arm.retract();
             }
             if (gamepad1.dpad_up) {
-                arm.down();
+                arm.up();
             }
             if (gamepad1.dpad_down) {
                 arm.down();
             }
 
         }
-
-
     }
 
 }
