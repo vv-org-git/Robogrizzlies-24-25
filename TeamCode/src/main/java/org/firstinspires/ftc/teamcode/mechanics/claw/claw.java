@@ -20,11 +20,11 @@ public class claw {
     public static double x_constant = 50;
     public static double z_constant = 180;
 
-    public static double x_left = -1.0;
-    public static double x_right = 0.7;
+    public static double x_left = 1;
+    public static double x_right = 0.5;
 
     public static double z_up = 1.0;
-    public static double z_down = 0.72;
+    public static double z_down = 0.5;
 
     public static double x_center =0.45;
     public static double z_center = 0.45;
@@ -32,7 +32,7 @@ public class claw {
 
 
     Servo claw_servo;
-    public static double claw_open = 0.55;
+    public static double claw_open = 1;
     public static double claw_close = 0.3;
 
     public static double high_bar_percent = 0.7;
