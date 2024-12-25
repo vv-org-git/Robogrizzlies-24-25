@@ -26,7 +26,7 @@ public class mainTeleOp extends LinearOpMode {
         samplePipeline = new SampleDetectionEdges(telemetry);
         //robot.webcam.startStreaming(samplePipeline);
         long init_time = System.currentTimeMillis();
-        controls control = new controls(robot, this,init_time, samplePipeline);
+        main_controls control = new main_controls(robot, this,init_time, samplePipeline);
 
 
         waitForStart();
@@ -34,8 +34,8 @@ public class mainTeleOp extends LinearOpMode {
         robot.claw.reset_x();
         robot.claw.reset_z();
         while (!isStopRequested()) {
-
             control.action();
+
         }
 
 

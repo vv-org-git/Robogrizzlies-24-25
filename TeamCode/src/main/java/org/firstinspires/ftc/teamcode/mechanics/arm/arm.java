@@ -27,7 +27,9 @@ public class arm {
 
 
     public static double ticks_per_inch_ex = 75;
-    public static double ticks_per_inch_r = 2400;
+    public static double ticks_per_rotation = 568;
+    public static double ticks_per_degree = 568/90;
+    public static double offset = 25;
 
 
 
@@ -36,7 +38,7 @@ public class arm {
         rotator = new utility_motor(l.hardwareMap, "rotator", rotator_dir);
     }
 
-    public void up(){rotator.setPlace((int) (max_rotation * ticks_per_inch_r), 0.5);}
+    public void up(){rotator.setPlace((int) (max_rotation * ticks_per_degree), 0.5);}
     public void down(){rotator.setPlace(0, 0.5);}
 
 
@@ -44,13 +46,13 @@ public class arm {
     //useless function
     public void extend_mid() {extender.setPlace((int) (mid_height * ticks_per_inch_ex), 1);}
     public void basket() {
-        extender.setPlace((int) (basket_height * ticks_per_inch_ex), 1);
-        rotator.setPlace((int) (basket_rotation * ticks_per_inch_r), 0.5);
+        extender.setPlace((int) (basket_height * ticks_per_rotation), 1);
+        rotator.setPlace((int) (basket_rotation * ticks_per_rotation), 0.5);
     }
 
     public void high_bar() {
         extender.setPlace((int) (high_bar_height * ticks_per_inch_ex), 1.0);
-        rotator.setPlace((int) (high_bar_rotation * ticks_per_inch_r), 0.5);
+        rotator.setPlace((int) (high_bar_rotation * ticks_per_rotation), 0.5);
     }
 
     public void ground() {
@@ -59,16 +61,27 @@ public class arm {
     }
     public void reverse_ground() {
         extender.setPlace((int) (ground_pick_up_rev * ticks_per_inch_ex), 1);
-        rotator.setPlace((int) ( ticks_per_inch_r), 0.5);
+        rotator.setPlace((int) ( ticks_per_rotation), 0.5);
     }
     public void partial_retract() {
         extender.setPlace((int) (30 * ticks_per_inch_ex), 1);
     }
 
-    public void setExtPos(double in){extender.setPlace((int) ( in*ticks_per_inch_r), 1);}
-    public void setRotPos(double deg){rotator.setPlace((int) (deg*ticks_per_inch_r), 0.3);}
+    public void setExtPos(double in){extender.setPlace((int) ( in*ticks_per_rotation), 1);}
+    public void setRotPos(double deg){rotator.setPlace((int) (deg*ticks_per_rotation), 0.3);}
 
-
+    public void rot1(){
+        double amount1 = 45;
+        extender.setPlace((int) ((amount1 + offset) * ticks_per_degree), 0.2);
+    }
+    public void rot2(){
+        double amount2 = 115;
+        extender.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.2);
+    }
+    public void rot3(){
+        double amount3 = 300;
+        extender.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.1);
+    }
 
     public void retract() {extender.setPlace(-10, 1);}
 
@@ -76,7 +89,7 @@ public class arm {
     public void setRotatorPower(double power) {rotator.setPower(power);}
 
     public void testExtenderTicks() {extender.setPlace((int) (10 * ticks_per_inch_ex), 0.3);}
-    public void testRotatorTicks() {rotator.setPlace((int) (90 * ticks_per_inch_r), 0.3);}
+    public void testRotatorTicks() {rotator.setPlace((int) (90 * ticks_per_rotation), 0.3);}
 
     public boolean isBusy() {return (extender.getPower() > 0 || rotator.getPower() > 0);}
 

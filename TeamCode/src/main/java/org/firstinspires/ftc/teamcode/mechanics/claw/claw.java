@@ -33,7 +33,7 @@ public class claw {
 
     Servo claw_servo;
     public static double claw_open = 1;
-    public static double claw_close = 0.3;
+    public static double claw_close = -0.3;
 
     public static double high_bar_percent = 0.7;
 
@@ -51,7 +51,6 @@ public class claw {
 
     public void bite() {claw_servo.setPosition(claw_close);}
     public void release() {claw_servo.setPosition(claw_open);}
-
 
     public void high_bar() {
         x_servo.setPosition(x_center);
@@ -95,7 +94,12 @@ public class claw {
 
     //EXACT SAME FUNCTION AS zDown thus we must find a new variable to pass in, otherwise remove function + usages and cal zDown
     public void reset_z() {z_servo.setPosition(z_down);}
-
+    public void rotate_x_left(){
+        x_servo.setPosition(x_left);
+    }
+    public void rotate_x_right(){
+        x_servo.setPosition(x_right);
+    }
 
 
 
