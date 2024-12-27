@@ -42,7 +42,7 @@ public class arm {
     public void down(){rotator.setPlace(0, 0.5);}
 
 
-    public void extend() {extender.setPower(1.0);}
+    public void extend() {rotator.setPlace(25000, 0.5);}
     //useless function
     public void extend_mid() {extender.setPlace((int) (mid_height * ticks_per_inch_ex), 1);}
     public void basket() {
@@ -70,20 +70,27 @@ public class arm {
     public void setExtPos(double in){extender.setPlace((int) ( in*ticks_per_rotation), 1);}
     public void setRotPos(double deg){rotator.setPlace((int) (deg*ticks_per_rotation), 0.3);}
 
-    public void rot1(){
+    //go to 45
+    public void rot0(){
         double amount1 = 45;
         extender.setPlace((int) ((amount1 + offset) * ticks_per_degree), 0.2);
     }
+    //make it go to 0 deg
+    public void rot1(){
+        extender.setPlace((int) (offset* ticks_per_degree), 0.2);
+    }
+    //go to 115 deg
     public void rot2(){
-        double amount2 = 115;
+        double amount2 = 130;
         extender.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.2);
     }
+    //go all the way back
     public void rot3(){
         double amount3 = 300;
         extender.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.1);
     }
 
-    public void retract() {extender.setPlace(-10, 1);}
+    public void retract() {rotator.setPlace(-500, 1);}
 
     public void setExtenderPower(double power) {extender.setPower(power);}
     public void setRotatorPower(double power) {rotator.setPower(power);}
