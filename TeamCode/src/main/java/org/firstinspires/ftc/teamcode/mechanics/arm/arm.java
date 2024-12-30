@@ -97,6 +97,9 @@ public class arm {
 
     public void testExtenderTicks() {extender.setPlace((int) (10 * ticks_per_inch_ex), 0.3);}
     public void testRotatorTicks() {rotator.setPlace((int) (90 * ticks_per_rotation), 0.3);}
+    public void retract_reset(){
+        rotator.setPlace(-3500, 0.7);
+    }
 
     public boolean isBusy() {return (extender.getPower() > 0 || rotator.getPower() > 0);}
 

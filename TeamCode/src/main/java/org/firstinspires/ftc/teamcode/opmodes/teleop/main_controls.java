@@ -47,18 +47,21 @@ public class main_controls {
             robot.claw.rotate_x_right();
         }
         if(op.gamepad1.left_bumper){
-            robot.claw.bite();
+            robot.arm.extend();
         }
         if(op.gamepad1.right_bumper){
-            robot.claw.release();
+            robot.arm.retract();
         }
 
         if (op.gamepad1.right_trigger>0.3) {
-            robot.arm.extend();
+            robot.claw.bite();
             return;
         }
         if (op.gamepad1.left_trigger > 0.3) {
-            robot.arm.retract();
+            robot.claw.release();
+        }
+        if(op.gamepad1.right_stick_button && op.gamepad1.left_stick_button){
+            robot.arm.retract_reset();
         }
     }
 
