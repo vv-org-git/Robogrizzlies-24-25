@@ -14,8 +14,9 @@ public class paths {
     public void place_specimen_1() {
         trajectory t = new trajectory();
         t.add(() -> robot.movement.moveToAsync(0, 24,0));
-        t.add(() -> robot.arm.high_bar());
-        t.add(() -> robot.claw.high_bar());
+        t.add(() -> robot.arm.rot2());
+        t.add(() -> robot.claw.zUp());
+        t.add(() -> robot.claw.release());
 
         states.add(t);
     }
