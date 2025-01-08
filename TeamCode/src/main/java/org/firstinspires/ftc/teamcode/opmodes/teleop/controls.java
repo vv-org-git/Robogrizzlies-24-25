@@ -61,14 +61,17 @@ public class controls {
             robot.movement.moveToAsync(x * left, 24,0);
             return;
         }
-        else if (op.gamepad1.left_bumper) {
-            robot.claw.rotate(-5);
-            return;
+        if (op.gamepad1.left_bumper) {
+            robot.arm.setExtenderPower(-1);
         }
         else if (op.gamepad1.right_bumper) {
-            robot.claw.rotate(5);
-            return;
+            robot.arm.setExtenderPower(1);
         }
+        else {
+            robot.arm.setExtenderPower(0);
+
+        }
+
 
         robot.movement.move(op.gamepad1.left_stick_x, op.gamepad1.left_stick_y, op.gamepad1.right_stick_x);
         //driver control
@@ -110,10 +113,10 @@ public class controls {
             robot.claw.release();
         }
         if (op.gamepad1.dpad_left) {
-            robot.claw.reset_x();
+            robot.claw.rotate_x_left();
         }
         if (op.gamepad1.dpad_right) {
-            robot.claw.reset_z();
+            robot.claw.rotate_x_right();
         }
         if (op.gamepad1.dpad_up) {
             robot.claw.zUp();

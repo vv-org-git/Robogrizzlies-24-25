@@ -20,6 +20,31 @@ public class paths {
 
         states.add(t);
     }
+    public void place_specimen_test() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsync(0, 24));
+        t.add(() -> robot.arm.rot2());
+        t.add(() -> robot.claw.zUp());
+        t.add(() -> robot.claw.release());
+
+        states.add(t);
+    }
+    public void place_specimen_test2() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsyncX(24));
+        t.add(() -> robot.arm.high_bar());
+        t.add(() -> robot.claw.zUp());
+        t.add(() -> robot.claw.release());
+
+        states.add(t);
+    }
+    public void rotate() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsyncHeading(90));
+
+        states.add(t);
+    }
+
     public void place_specimen_2(int r) {
         trajectory t = new trajectory();
         t.add(() -> robot.movement.moveToAsync(r, 24,0));

@@ -13,7 +13,10 @@ public class autoTest extends LinearOpMode {
         robot r = new robot(this, 0, 0,0, false);
         paths path = new paths(r);
 
-        path.strafe_left(12);
+        path.place_specimen_test2();
+        path.rotate();
+
+
 
         //path.strafe_forward();
         machine.run( true, r, path);

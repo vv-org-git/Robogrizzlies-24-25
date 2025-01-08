@@ -19,17 +19,25 @@ public class movement {
     LinearOpMode li;
 
 
+    public static double err = 0.99;
+    public static double break_constant = 8.0;
 
     public static double allowed_x_err = 0.9;
     public static double allowed_y_err = 0.9;
     public static double allowed_h_err = 0.9;
-    public static double FR_PERCENT = 0.9;
-    public static double BR_PERCENT = 0.9;
+    public static double FR_PERCENT = 1;
+    public static double BR_PERCENT = 1;
     public static double FL_PERCENT = 1.0;
-    public static double BL_PERCENT = 0.9;
+    public static double BL_PERCENT = 1;
 
     public double power = 1.0;
+    public static double speed = 0.5;
+
     public double init_x_offset = 12.0;
+    private double prev_vel_x = 0;
+    private double prev_vel_y = 0;
+    private double prev_vel_h = 0;
+
 
     public movement(LinearOpMode l, double x, double y, double z ) {
         li = l;
@@ -57,10 +65,18 @@ public class movement {
         double horizontal = l_x;
         double vertical = -l_y;
         double turn =  r_x;
-        fl.setPower((vertical - horizontal - turn)*FL_PERCENT*power);
+        li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
+        li.telemetry.addData("fr", (vertical - horizontal + turn)*FR_PERCENT*power);
+        li.telemetry.addData("bl", (vertical + horizontal + turn)*BL_PERCENT*power);
+        li.telemetry.addData("br", (vertical - horizontal - turn)*BR_PERCENT*power);
+
+
+
+
+        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
         fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
         bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
-        br.setPower((vertical + horizontal - turn)*BR_PERCENT*power);
+        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
     }
     public void moveAuto(double l_x, double l_y, double r_x){
         double horizontal = l_x;
@@ -96,7 +112,7 @@ public class movement {
         move(0,0,0);
 
     }
-    public void moveToAsync(double x, double y, double heading) {
+    public void moveToAsync4(double x, double y, double heading) {
         odo.bulkUpdate();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
@@ -149,7 +165,7 @@ public class movement {
                 x_velocity = 0.0;
             }
             else if (x - x_f > 0 ) {
-                x_velocity = 1.0;
+                x_velocity = speed;
             }
 
             if (Math.abs(y-y_f) < allowed_y_err) {
@@ -170,6 +186,148 @@ public class movement {
             move(x_velocity, y_velocity, h_velocity);
         }
     }
+    public void moveToAsync(double x, double y, double h) { }
+    public void moveToAsyncX(double x) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double x_f = p.getX(DistanceUnit.INCH);
+        double x_velocity = 0;
+        if (x_f > x) {
+            x_velocity = Math.min(speed, (x_f - x)/break_constant);
+        }
+        else if (x > x_f ) {
+            x_velocity = -Math.min(speed, (x - x_f)/break_constant);;
+        }
+        if (prev_vel_x * x_velocity < 0) {
+            x_velocity = 0;
+        }
+        else {
+            prev_vel_x = x_velocity;
+        }
+
+
+        li.telemetry.addData("xv", x_velocity);
+
+        move(x_velocity, 0, 0);
+
+    }
+    public void moveToAsyncY(double y) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double y_f = p.getY(DistanceUnit.INCH);
+        double y_velocity = 0;
+
+
+        if (y_f > y) {
+            y_velocity = Math.min(speed, (y_f - y)/break_constant);
+        }
+        else if (y > y_f ) {
+            y_velocity = -Math.min(speed, (y - y_f)/break_constant);;
+        }
+
+        if (prev_vel_y * y_velocity < 0) {
+            y_velocity = 0;
+        }
+        else {
+            prev_vel_y = y_velocity;
+        }
+
+        li.telemetry.addData("yv", y_velocity);
+
+        move(0, y_velocity, 0);
+
+    }
+    public void rotate(double y) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double y_f = p.getHeading(AngleUnit.DEGREES);
+        double h_velocity = 0;
+
+
+        if (y_f > y) {
+            h_velocity = Math.min(speed, (y_f - y)/break_constant);
+        }
+        else if (y > y_f ) {
+            h_velocity = -Math.min(speed, (y - y_f)/break_constant);;
+        }
+
+        if (prev_vel_y * h_velocity < 0) {
+            h_velocity = 0;
+        }
+        else {
+            prev_vel_h = h_velocity;
+        }
+
+        li.telemetry.addData("hv", h_velocity);
+
+        move(0, 0, h_velocity);
+
+    }
+    public void moveToAsync(double x, double y) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double x_f = p.getX(DistanceUnit.INCH);
+        double y_f = p.getY(DistanceUnit.INCH);
+        double x_velocity = 0;
+        double y_velocity = 0;
+        if (x_f > x) {
+            x_velocity = Math.min(speed, (x_f - x)/break_constant);
+        }
+        else if (x > x_f ) {
+            x_velocity = -Math.min(speed, (x - x_f)/break_constant);;
+        }
+
+        if (y_f > y) {
+            y_velocity = Math.min(speed, (y_f - y)/break_constant);
+        }
+        else if (y > y_f ) {
+            y_velocity = -Math.min(speed, (y - y_f)/break_constant);;
+        }
+
+        if (prev_vel_x * x_velocity < 0) {
+            x_velocity = 0;
+        }
+        else {
+            prev_vel_x = x_velocity;
+        }
+
+        if (prev_vel_y * y_velocity < 0) {
+            y_velocity = 0;
+        }
+        else {
+            prev_vel_y = y_velocity;
+        }
+
+        li.telemetry.addData("xv", x_velocity);
+        li.telemetry.addData("yv", y_velocity);
+
+        move(x_velocity, y_velocity, 0);
+    }
+    public void moveToAsyncHeading(double h) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double h_f = p.getHeading(AngleUnit.DEGREES);
+        double h_velocity = 0;
+        if (h_f > h) {
+            h_velocity = -Math.min(speed, (h_f - h)/break_constant);
+        }
+        else if (h > h_f ) {
+            h_velocity = Math.min(speed, (h - h_f)/break_constant);;
+        }
+
+
+        if (prev_vel_h * h_velocity < 0) {
+            h_velocity = 0;
+        }
+        else {
+            prev_vel_h = h_velocity;
+        }
+        li.telemetry.addData("hv", h_velocity);
+
+
+        move(0,0, h_velocity);
+    }
+
     public void moveToAsync3() {
         double x = 12.0;
         odo.bulkUpdate();
