@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.mechanics.arm;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class arm {
@@ -42,13 +41,8 @@ public class arm {
 
     public void up(){rotator.setPlace((int) (max_rotation * ticks_per_degree), 0.5);}
     public void down(){rotator.setPlace(0, 0.5);}
-
-
-<<<<<<< Updated upstream
     public void extend() {extender.setPlace(max_extension, 1);}
-=======
-    public void extend() {rotator.setPlace( 3500, 0.5);}
->>>>>>> Stashed changes
+
     //useless function
     public void extend_mid() {extender.setPlace((int) (mid_height * ticks_per_inch_ex), 1);}
     public void basket() {
@@ -82,54 +76,34 @@ public class arm {
         return extender.checker() != DcMotor.RunMode.RUN_TO_POSITION;
     }
     public boolean keep_arm_under_limit(){
-        if(extender.get_pos() * 1.1 >= arm_const){
-            return false;
-        }
-        return true;
+        return !(extender.get_pos() * 1.1 >= arm_const);
     }
 
     //go to 45
     public void rot0(){
-<<<<<<< Updated upstream
-        double amount1 = 60;
+        double amount1 = 45;
         rotator.setPlace((int) ((amount1 + offset) * ticks_per_degree), 0.3);
-=======
-        double amount1 = 90;
-        extender.setPlace((int) ((amount1 + offset) * ticks_per_degree), 0.2);
->>>>>>> Stashed changes
     }
     //make it go to 0 deg
     public void rot1(){
-        double amount1 = 75;
+        double amount1 = 80;
         rotator.setPlace((int) ((amount1+offset)* ticks_per_degree), 0.3);
     }
     //go to 115 deg
     public void rot2(){
-<<<<<<< Updated upstream
         double amount2 = 150;
         rotator.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.3);
     }
     //go all the way back
-    public void rot3(){
-        double amount3 = 0;
-        rotator.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.3);
-    }
 
     public void retract() {extender.setPlace(0, 1);}
-=======
-        double amount2 = 120;
-        extender.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.2);
-    }
-    //go all the way back
     public void rot3(){
-        double amount3 = 190;
-        extender.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.1);
+        double amount3 = 10;
+        rotator.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.3);
     }
     public void retract_negative(){
         rotator.setPlace(-3500, -0.7);
     }
-    public void retract() {rotator.setPlace(0, 0.5);}
->>>>>>> Stashed changes
 
     public void setExtenderPower(double power) {extender.setPower(power);}
     public void setRotatorPower(double power) {rotator.setPower(power);}
@@ -141,5 +115,7 @@ public class arm {
         extender.reset();
     }
     public boolean isBusy() {return (extender.getPower() > 0 || rotator.getPower() > 0);}
-
 }
+
+
+//go all the way back

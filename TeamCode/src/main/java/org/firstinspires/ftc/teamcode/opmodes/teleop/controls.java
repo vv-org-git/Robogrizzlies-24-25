@@ -95,43 +95,27 @@ public class controls {
         }
 
         if (op.gamepad1.y) {
-<<<<<<< Updated upstream
             robot.arm.rot0();
-=======
-
->>>>>>> Stashed changes
             robot.claw.reset_x();
             robot.claw.high_bar();
         }
         if (op.gamepad1.a) {
-<<<<<<< Updated upstream
             robot.arm.rot1();
-=======
-
->>>>>>> Stashed changes
             robot.claw.reset_x();
             robot.claw.basket();
         }
         if (op.gamepad1.x) {
-<<<<<<< Updated upstream
             robot.arm.rot2();
-=======
-
->>>>>>> Stashed changes
             robot.claw.zUp();
             robot.claw.rotate_x_right();
             robot.claw.release();
         }
         if (op.gamepad1.b) {
-<<<<<<< Updated upstream
             robot.arm.rot3();
             robot.claw.zDown();
             robot.claw.rotate_x_right();
-=======
-
             robot.claw.zUp();
             robot.claw.reset_x();
->>>>>>> Stashed changes
             robot.claw.release();
         }
         if (op.gamepad1.dpad_left) {
