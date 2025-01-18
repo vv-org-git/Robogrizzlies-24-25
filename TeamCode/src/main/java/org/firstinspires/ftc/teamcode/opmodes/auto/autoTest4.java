@@ -24,6 +24,7 @@ public class autoTest4 extends LinearOpMode {
         long time = System.currentTimeMillis();
         paths path = new paths(r);
         path.place_specimen_test();
+        path.states.get(0).run();
         while (!isStopRequested()) {
                 calls += 1;
                 Pose2D p =  r.movement.odo.getPosition();

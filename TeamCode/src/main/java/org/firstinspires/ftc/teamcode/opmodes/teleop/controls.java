@@ -32,7 +32,7 @@ public class controls {
             samplePipeline.setColor(2);
         }*/
         //Automations
-        if (op.gamepad1.left_stick_button) {
+        /*if (op.gamepad1.left_stick_button) {
             robot.arm.basket();
             robot.movement.moveToAsync(-48, 24,-135);
             robot.claw.basket();
@@ -70,7 +70,7 @@ public class controls {
         else {
             robot.arm.setExtenderPower(0);
 
-        }
+        }*/
 
 
         robot.movement.move(op.gamepad1.left_stick_x, op.gamepad1.left_stick_y, op.gamepad1.right_stick_x);
@@ -85,31 +85,35 @@ public class controls {
         if (op.gamepad1.right_trigger > 0.3) {
             robot.claw.bite();
         }
-        if (op.gamepad1.left_trigger > 0.3) {
+        if(op.gamepad1.left_trigger>0.3 && op.gamepad1.left_stick_button) {
+            robot.claw.high_bar_place();
+            op.sleep(100);
             robot.claw.release();
         }
+        else if (op.gamepad1.left_trigger > 0.3) {
+            robot.claw.release();
+        }
+
         if (op.gamepad1.y) {
-            robot.arm.high_bar();
+            robot.arm.rot0();
             robot.claw.reset_x();
             robot.claw.high_bar();
         }
         if (op.gamepad1.a) {
-            robot.arm.basket();
+            robot.arm.rot1();
             robot.claw.reset_x();
             robot.claw.basket();
         }
         if (op.gamepad1.x) {
-            robot.arm.down();
-            robot.arm.partial_retract();
+            robot.arm.rot2();
             robot.claw.zUp();
-            robot.claw.reset_x();
+            robot.claw.rotate_x_right();
             robot.claw.release();
         }
         if (op.gamepad1.b) {
-            robot.arm.partial_retract();
-            robot.arm.up();
-            robot.claw.zUp();
-            robot.claw.reset_x();
+            robot.arm.rot3();
+            robot.claw.zDown();
+            robot.claw.rotate_x_right();
             robot.claw.release();
         }
         if (op.gamepad1.dpad_left) {
@@ -125,6 +129,15 @@ public class controls {
         if (op.gamepad1.dpad_down) {
             robot.claw.zDown();
 
+        }
+        if(op.gamepad1.left_bumper && op.gamepad1.right_bumper){
+            robot.arm.retract_reset();
+        }
+        if(op.gamepad1.left_bumper){
+            robot.arm.setExtenderPower(1);
+        }
+        if(op.gamepad1.right_bumper){
+            robot.arm.setExtenderPower(-1);
         }
 
         //Precise Control
