@@ -13,12 +13,13 @@ public class paths {
     }
     public void place_specimen_1() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsync(0, 24,0));
+        t.add(() -> robot.movement.moveToAsync(0, 1, 90));
         t.add(() -> robot.arm.rot2());
         t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.release());
 
         states.add(t);
+        assert states.size() == 1 : "Its not adding stuff";
     }
     public void place_specimen_test() {
         trajectory t = new trajectory();

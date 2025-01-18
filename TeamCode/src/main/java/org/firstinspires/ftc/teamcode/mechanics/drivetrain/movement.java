@@ -186,7 +186,57 @@ public class movement {
             move(x_velocity, y_velocity, h_velocity);
         }
     }
-    public void moveToAsync(double x, double y, double h) { }
+    public void moveToAsync(double x, double y, double h) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double x_f = p.getX(DistanceUnit.INCH);
+        double y_f = p.getY(DistanceUnit.INCH);
+        double h_f = p.getHeading(AngleUnit.DEGREES);
+        double x_velocity = 0;
+        double y_velocity = 0;
+        double h_velocity = 0;
+
+        if (x_f > x) {
+            x_velocity = Math.min(speed, (x_f - x)/break_constant);
+        }
+        else if (x > x_f ) {
+            x_velocity = -Math.min(speed, (x - x_f)/break_constant);;
+        }
+
+        if (y_f > y) {
+            y_velocity = Math.min(speed, (y_f - y)/break_constant);
+        }
+        else if (y > y_f ) {
+            y_velocity = -Math.min(speed, (y - y_f)/break_constant);;
+        }
+
+        if (prev_vel_x * x_velocity < 0) {
+            x_velocity = 0;
+        }
+        else {
+            prev_vel_x = x_velocity;
+        }
+
+        if (prev_vel_y * y_velocity < 0) {
+            y_velocity = 0;
+        }
+        else {
+            prev_vel_y = y_velocity;
+        }
+        if(h_f>h){
+            h_velocity = Math.min(speed, (h_f-h)/break_constant);
+        }else if(h>h_f){
+            h_velocity = -Math.min(speed, (h-h_f)/break_constant);
+        }
+        if(prev_vel_h * h_velocity < 0){
+            h_velocity = 0;
+        }else{
+            prev_vel_h = h_velocity;
+        }
+
+
+        move(x_velocity, y_velocity, h_velocity);
+    }
     public void moveToAsyncX(double x) {
         odo.bulkUpdate();
         Pose2D p = odo.getPosition();

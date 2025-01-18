@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import java.util.ArrayList;
+
 @Config
 public  class  pathmaker {
     public static int breaking_distance = 12;
@@ -47,7 +49,7 @@ public  class  pathmaker {
         if ((h_f - heading) < 0) {
             h_vel = 1.0;
         }
-        return pathmaker.unit_clip(x_vel, y_vel, h_vel);
+        return new double[] {x_vel, y_vel, h_vel};
     }
 
 

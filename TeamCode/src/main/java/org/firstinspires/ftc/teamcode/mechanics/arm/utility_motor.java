@@ -35,4 +35,13 @@ public class utility_motor {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(power);
     }
+    public int get_pos(){
+        return motor.getCurrentPosition();
+    }
+    public void reset(){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    public DcMotor.RunMode checker(){
+        return motor.getMode();
+    }
 }

@@ -26,8 +26,8 @@ public class claw {
     public static double z_up = 1.0;
     public static double z_down = 0.5;
 
-    public static double x_center =0.45;
-    public static double z_center = 0.45;
+    public static double x_center =0.75;
+    public static double z_center = 0.60;
     //find z_center^
 
 
@@ -53,11 +53,14 @@ public class claw {
     public void release() {claw_servo.setPosition(claw_open);}
 
     public void high_bar() {
-        x_servo.setPosition(x_center);
-        z_servo.setPosition(z_down + (z_up-z_down)*high_bar_percent);
+        x_servo.setPosition(x_left);
+        z_servo.setPosition(0.80);
+    }
+    public void high_bar_place(){
+        z_servo.setPosition(z_center);
     }
     public void basket() {
-        x_servo.setPosition(x_center);
+        x_servo.setPosition(x_left);
         z_servo.setPosition(z_up );
     }
 
