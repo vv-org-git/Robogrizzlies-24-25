@@ -63,6 +63,10 @@ public class main_controls {
         if(op.gamepad1.right_stick_button && op.gamepad1.left_stick_button){
             robot.arm.retract_reset();
         }
+        //
+        if(op.gamepad1.right_stick_button && op.gamepad1.left_stick_button){
+            robot.arm.retract_negative();
+        }
     }
 
 }
