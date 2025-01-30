@@ -33,6 +33,8 @@ public class mainTeleOp extends LinearOpMode {
         robot.claw.release();
         robot.claw.reset_x();
         robot.claw.reset_z();
+        robot.arm.rot0();
+
         while (!isStopRequested()) {
             control.action();
 

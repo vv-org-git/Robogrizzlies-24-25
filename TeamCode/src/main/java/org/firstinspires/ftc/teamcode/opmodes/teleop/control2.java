@@ -86,22 +86,16 @@ public class control2 {
             robot.claw.release();
         }
         if (op.gamepad2.y) {
-            robot.arm.high_bar();
-            robot.claw.reset_x();
-            robot.claw.high_bar();
+            robot.arm.rot0();
         }
         if (op.gamepad2.a) {
-            robot.arm.basket();
-            robot.claw.reset_x();
-            robot.claw.basket();
+            robot.arm.rot1();
         }
         if (op.gamepad2.x) {
-            robot.arm.reverse_ground();
-            robot.claw.zUp();
-            robot.claw.reset_x();
+            robot.arm.rot2();
         }
         if (op.gamepad2.b) {
-            robot.arm.up();
+            robot.arm.rot3();
         }
         if (op.gamepad2.dpad_left) {
             robot.claw.reset_x();

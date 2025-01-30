@@ -15,17 +15,20 @@ public class machine {
         int n_states = path.states.size();
         int current_state = 0;
         if(l.isStopRequested()) return;
+        robot.movement.resetMovement();
         path.states.get(current_state).run();
         l.sleep(500);
         while (l.opModeIsActive() && !l.isStopRequested() && current_state < n_states) {
-            l.sleep(1);
+            l.sleep(20);
+            l.telemetry.addData("current_state",current_state);
+            l.telemetry.update();
+
             robot.movement.odo.bulkUpdate();
+            path.states.get(current_state).run();
             if (!robot.is_busy()) {
+                robot.movement.resetMovement();
                 current_state += 1;
 
-            }
-            else {
-                path.states.get(current_state).run();
             }
         }
     }

@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.robot.robot;
 
 import java.util.ArrayList;
 
+@Config
 public class paths {
     ArrayList<trajectory> states;
     robot robot;
+    public static double specimen_forward = 12;
     public paths(robot r) {
         robot = r;
         states = new ArrayList<>();
     }
     public void place_specimen_1() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsync(0, 24,0));
+        t.add(() -> robot.movement.moveToAsyncPID(0, 24,0));
         t.add(() -> robot.arm.rot2());
         t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.release());
@@ -22,16 +26,25 @@ public class paths {
     }
     public void place_specimen_test() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsync(0, 24));
+        t.add(() -> robot.movement.moveToAsyncPID(0, specimen_forward, 0));
         t.add(() -> robot.arm.rot2());
         t.add(() -> robot.claw.zUp());
+        t.add(() -> robot.claw.bite());
+
+        states.add(t);
+    }
+    public void drop_specimen() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsyncPID(0, 24, 0));
+        t.add(() -> robot.arm.rot2());
+        t.add(() -> robot.claw.zDown());
         t.add(() -> robot.claw.release());
 
         states.add(t);
     }
     public void place_specimen_test2() {
         trajectory t = new trajectory();
-        t.add(() -> robot.movement.moveToAsyncX(24));
+        t.add(() -> robot.movement.moveToAsyncPIDCustomXY(12,12));
         t.add(() -> robot.arm.high_bar());
         t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.release());
@@ -41,6 +54,12 @@ public class paths {
     public void rotate() {
         trajectory t = new trajectory();
         t.add(() -> robot.movement.moveToAsyncHeading(90));
+
+        states.add(t);
+    }
+    public void rotate2() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.movement.moveToAsyncPIDCustomH(90));
 
         states.add(t);
     }

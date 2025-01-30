@@ -5,6 +5,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.Pose2D;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker.pathmaker;
@@ -20,15 +22,17 @@ public class movement {
 
 
     public static double err = 0.99;
-    public static double break_constant = 8.0;
+    public static double break_constant = 15.0;
 
-    public static double allowed_x_err = 0.9;
-    public static double allowed_y_err = 0.9;
-    public static double allowed_h_err = 0.9;
+    public static double allowed_x_err = 0.99;
+    public static double allowed_y_err = 0.99;
+    public static double allowed_h_err = 0.99;
     public static double FR_PERCENT = 1;
     public static double BR_PERCENT = 1;
     public static double FL_PERCENT = 1.0;
     public static double BL_PERCENT = 1;
+    public int call_num = 0;
+    public long init_time = 0;
 
     public double power = 1.0;
     public static double speed = 0.5;
@@ -37,12 +41,14 @@ public class movement {
     private double prev_vel_x = 0;
     private double prev_vel_y = 0;
     private double prev_vel_h = 0;
-
+    PIDEx pid_controller_X;
+    PIDEx pid_controller_Y;
+    PIDEx pid_controller_R;
 
     public movement(LinearOpMode l, double x, double y, double z ) {
         li = l;
         l.telemetry.addData("movement", "movement");
-
+        init_time = System.currentTimeMillis();
         odo = l.hardwareMap.get(GoBildaPinpointDriver.class, "imu");
         odo.setOffsets(-84.0, -168.0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -54,10 +60,23 @@ public class movement {
         fr = new wheel(l.hardwareMap, "FR", false);
         bl = new wheel(l.hardwareMap, "BL", false);
         br = new wheel(l.hardwareMap, "BR", true);
+        PIDCoefficientsEx coefficientsX = new PIDCoefficientsEx(PIDConstants.KiX,PIDConstants.KpX,PIDConstants.KdX,PIDConstants.integralSumMaxX,
+                PIDConstants.stability_threshX,
+                PIDConstants.lowPassGainX);
+        pid_controller_X = new PIDEx(coefficientsX);
+        PIDCoefficientsEx coefficientsY = new PIDCoefficientsEx(PIDConstants.KiY,PIDConstants.KpY,PIDConstants.KdY,PIDConstants.integralSumMaxY,
+                PIDConstants.stability_threshY,
+                PIDConstants.lowPassGainY);
+        pid_controller_Y = new PIDEx(coefficientsY);
+        PIDCoefficientsEx coefficientsR = new PIDCoefficientsEx(PIDConstants.KiR,PIDConstants.KpR,PIDConstants.KdR,PIDConstants.integralSumMaxR,
+                PIDConstants.stability_threshR,
+                PIDConstants.lowPassGainR);
+        pid_controller_R = new PIDEx(coefficientsR);
+
     }
 
     public boolean is_busy(){
-        return (fl.getPower() > 0 || fr.getPower() > 0 || bl.getPower() > 0  || br.getPower() > 0 );
+        return (Math.abs(fl.getPower()) > 0.1 || Math.abs(fr.getPower()) > 0.1 || Math.abs(bl.getPower()) > 0.1  || Math.abs(br.getPower()) > 0.1 );
     }
 
 
@@ -188,26 +207,27 @@ public class movement {
     }
     public void moveToAsync(double x, double y, double h) { }
     public void moveToAsyncX(double x) {
+        call_num += 1;
         odo.bulkUpdate();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double x_velocity = 0;
         if (x_f > x) {
-            x_velocity = Math.min(speed, (x_f - x)/break_constant);
-        }
-        else if (x > x_f ) {
-            x_velocity = -Math.min(speed, (x - x_f)/break_constant);;
+            x_velocity = Math.min(speed, (x_f - x) / break_constant);
+        } else if (x > x_f) {
+            x_velocity = -Math.min(speed, (x - x_f) / break_constant);
+            ;
         }
         if (prev_vel_x * x_velocity < 0) {
             x_velocity = 0;
-        }
-        else {
+        } else {
             prev_vel_x = x_velocity;
         }
 
 
         li.telemetry.addData("xv", x_velocity);
-
+        li.telemetry.addData("hertz", call_num / (System.currentTimeMillis() - init_time) * 1000);
+        //li.telemetry.update();
         move(x_velocity, 0, 0);
 
     }
@@ -262,6 +282,160 @@ public class movement {
 
         move(0, 0, h_velocity);
 
+    }
+    public void moveToAsyncPID(double targetX, double targetY, double targetHeading) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        double currentHeading = p.getHeading(AngleUnit.DEGREES);
+        // Constants for control gains
+        final double POSITION_GAIN = 1.0; // Adjust for proportional control of position
+        final double HEADING_GAIN = 1.0;  // Adjust for proportional control of heading
+
+        // Calculate displacement
+        double deltaX = targetX - currentX;
+        double deltaY = targetY - currentY;
+
+        // Calculate the distance to the target
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // Calculate the angle to the target relative to the robot's current heading
+        double angleToTarget = Math.atan2(deltaY, deltaX);
+        // Calculate heading error
+        double headingError = targetHeading - currentHeading;
+        // Normalize the heading error to the range [-180, 180]
+        headingError = normalizeAngle(headingError);
+
+        // Calculate velocities
+        double forwardVelocity = POSITION_GAIN * distance * Math.cos(angleToTarget - Math.toRadians(currentHeading));
+        double strafeVelocity = POSITION_GAIN * distance * Math.sin(angleToTarget - Math.toRadians(currentHeading));
+        double headingVelocity = HEADING_GAIN * headingError;
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        move(strafeVelocity, forwardVelocity, headingVelocity);
+    }
+    public static double kPx = 1;
+    public static double kIx = 1;
+    public static double kDx = 1;
+
+    public static double kPy = 1;
+    public static double kIy = 1;
+    public static double kDy = 1;
+
+    public double eIx = 0;
+    public double prevErrx = 0;
+
+    public double eIy = 0;
+    public double prevErry = 0;
+    public long iTime = 0;
+
+    public void resetMovement() {
+        iTime = System.currentTimeMillis();
+        eIx = 0;
+        eIy = 0;
+        eIh = 0;
+        prevErrx = 0;
+        prevErry = 0;
+        prevErrh = 0;
+
+    }
+
+    public void moveToAsyncPIDCustomXY(double targetX, double targetY) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        if (closeEnough(currentX, targetX, currentY, targetY)) {
+            return;
+        }
+        double x_err = targetX - currentX;
+        double y_err = targetY - currentY;
+        long time = System.currentTimeMillis();
+        double x_vel = kPx * x_err * iTime + kIx * eIx * iTime + kDx * x_err/prevErrx;
+        double y_vel = kPy * y_err * iTime + kIy * eIy * iTime + kDy * x_err/prevErry;
+        prevErrx = x_err;
+        eIx += x_err;
+        prevErry = y_err;
+        eIy += y_err;
+        iTime = time;
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        move(x_vel/(Math.abs(x_vel)+Math.abs(y_vel)), y_vel/(Math.abs(x_vel)+Math.abs(y_vel)), 0);
+    }
+    public static double kPh = 1;
+    public static double kIh = 1;
+    public static double kDh = 1;
+
+    public double eIh = 0;
+    public double prevErrh = 0;
+
+
+    public void moveToAsyncPIDCustomH(double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentH = p.getHeading(AngleUnit.DEGREES);
+        if (closeEnough(currentH, targetH)) {
+            return;
+        }
+        double h_err = targetH - currentH;
+        long time = System.currentTimeMillis();
+        double h_vel = kPh * h_err * iTime + kIh * eIh * (time- iTime) + kDh * h_err/prevErrh;
+        prevErrh = h_err;
+        eIh += h_err;
+        iTime = time;
+
+        if (h_vel > 1) {
+            h_vel = 1;
+        }
+        else if (h_vel < -1) {
+            h_vel = -1;
+        }
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        move(0, 0, h_vel);
+    }
+    private boolean closeEnough(double x, double x_f, double y, double y_f,double h,double h_f) {
+        int x1 = 1;
+        int y1 = 1;
+        int h1 = 1;
+
+        if (x_f * allowed_x_err > x) {
+            x1 = -1;
+        }
+        if (y_f * allowed_y_err > y) {
+            y1 = -1;
+        }
+        if (h_f * allowed_h_err > h) {
+            h1 = -1;
+        }
+        return x1+y1+h1 == 3;
+    }
+    private boolean closeEnough(double x, double x_f, double y, double y_f) {
+        int x1 = 1;
+        int y1 = 1;
+
+        if (x_f * allowed_x_err > x) {
+            x1 = -1;
+        }
+        if (y_f * allowed_y_err > y) {
+            y1 = -1;
+        }
+        return x1+y1 == 2;
+    }
+    private boolean closeEnough(double x, double x_f) {
+        int x1 = 1;
+
+        if (x_f * allowed_x_err > x) {
+            x1 = -1;
+        }
+        return x1 == 1;
+    }
+
+    // Helper function to normalize an angle to the range [-180, 180]
+    private double normalizeAngle(double angle) {
+        while (angle > 180) angle -= 360;
+        while (angle < -180) angle += 360;
+        return angle;
     }
     public void moveToAsync(double x, double y) {
         odo.bulkUpdate();
@@ -345,6 +519,20 @@ public class movement {
         double y_f = p.getY(DistanceUnit.INCH)+y;
         double h_f = p.getHeading(AngleUnit.DEGREES)+heading;
         this.moveTo(x_f, y_f, h_f);
+    }
+
+    public void moveToAsyncPIDXY(double targetX, double targetY) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        if (closeEnough(currentX, targetX, currentY, targetY)) {
+            return;
+        }
+        double x_pow = pid_controller_X.calculate(targetX, currentX);
+        double y_pow = pid_controller_Y.calculate(targetY, currentY);
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        move(x_pow, y_pow, 0);
     }
 
 

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.teamcode.robot.robot;
 
 @Autonomous
@@ -13,7 +12,7 @@ public class autoTest extends LinearOpMode {
         robot r = new robot(this, 0, 0,0, false);
         paths path = new paths(r);
 
-        path.place_specimen_test2();
+        path.place_specimen_test();
         path.rotate();
 
 

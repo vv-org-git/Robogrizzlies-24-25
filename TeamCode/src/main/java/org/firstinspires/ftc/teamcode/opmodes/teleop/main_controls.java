@@ -46,11 +46,15 @@ public class main_controls {
         if (op.gamepad1.dpad_right) {
             robot.claw.rotate_x_right();
         }
-        if(op.gamepad1.left_bumper){
-            robot.arm.extend();
-        }
-        if(op.gamepad1.right_bumper){
+        if(op.gamepad1.left_bumper && op.gamepad1.start){
+            robot.arm.setExtenderPower(1);
+        }else if(op.gamepad1.left_bumper){
             robot.arm.retract();
+        }
+        if(op.gamepad1.right_bumper && op.gamepad1.start){
+            robot.arm.setExtenderPower(-1);
+        }else if(op.gamepad1.right_bumper){
+            robot.arm.extend();
         }
 
         if (op.gamepad1.right_trigger>0.3) {

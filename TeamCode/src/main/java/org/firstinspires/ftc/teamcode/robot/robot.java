@@ -26,12 +26,13 @@ public class robot {
     public static int b_y = 0;
     public static int b_r = 0;
     LinearOpMode l;
-    public robot(LinearOpMode l, double x, double y, double z, boolean w){
-        movement = new movement(l, x, y, z);
-        arm = new arm(l);
-        claw = new claw(l);
+    public robot(LinearOpMode li, double x, double y, double z, boolean w){
+        movement = new movement(li, x, y, z);
+        arm = new arm(li);
+        claw = new claw(li);
+        l = li;
         if (w) {
-            webcam = new webcam(l);
+            webcam = new webcam(li);
         }
     }
     public void alignment(SampleDetectionEdges samplePipeline) {
@@ -44,6 +45,9 @@ public class robot {
         claw.rotate(m_r * r[2] + b_r);
     }
     public boolean is_busy() {
+        l.telemetry.addData("movement", this.movement.is_busy());
+        l.telemetry.addData("robot", this.arm.isBusy());
+
         return (this.movement.is_busy() || this.arm.isBusy() || busy);
     }
 

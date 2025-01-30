@@ -32,6 +32,7 @@ public class controls {
             samplePipeline.setColor(2);
         }*/
         //Automations
+        /*
         if (op.gamepad1.left_stick_button) {
             robot.arm.basket();
             robot.movement.moveToAsync(-48, 24,-135);
@@ -61,16 +62,16 @@ public class controls {
             robot.movement.moveToAsync(x * left, 24,0);
             return;
         }
-        if (op.gamepad1.left_bumper) {
+        if (op.gamepad1.left_bumper && op.gamepad1.start) {
             robot.arm.setExtenderPower(-1);
         }
-        else if (op.gamepad1.right_bumper) {
-            robot.arm.setExtenderPower(1);
+        else if (op.gamepad1.right_bumper && op.gamepad1.start ) {
+            robot.arm.retract();
         }
         else {
-            robot.arm.setExtenderPower(0);
+            robot.arm.extend();
 
-        }
+        }*/
 
 
         robot.movement.move(op.gamepad1.left_stick_x, op.gamepad1.left_stick_y, op.gamepad1.right_stick_x);
@@ -89,28 +90,18 @@ public class controls {
             robot.claw.release();
         }
         if (op.gamepad1.y) {
-            robot.arm.high_bar();
-            robot.claw.reset_x();
-            robot.claw.high_bar();
+            robot.arm.rot1();
         }
         if (op.gamepad1.a) {
-            robot.arm.basket();
-            robot.claw.reset_x();
-            robot.claw.basket();
+            robot.arm.rot2();
         }
         if (op.gamepad1.x) {
-            robot.arm.down();
-            robot.arm.partial_retract();
-            robot.claw.zUp();
-            robot.claw.reset_x();
-            robot.claw.release();
+
+            robot.arm.rot0();
         }
         if (op.gamepad1.b) {
-            robot.arm.partial_retract();
-            robot.arm.up();
-            robot.claw.zUp();
-            robot.claw.reset_x();
-            robot.claw.release();
+            robot.arm.rot3();
+
         }
         if (op.gamepad1.dpad_left) {
             robot.claw.rotate_x_left();
@@ -125,6 +116,18 @@ public class controls {
         if (op.gamepad1.dpad_down) {
             robot.claw.zDown();
 
+        }
+        if(op.gamepad1.right_bumper){
+            robot.arm.extend();
+        }
+        else {
+            robot.arm.setExtenderPower(0);
+        }
+        if(op.gamepad1.left_bumper){
+            robot.arm.setExtenderPower(-1);
+        }
+        else {
+            robot.arm.setExtenderPower(0);
         }
 
         //Precise Control
