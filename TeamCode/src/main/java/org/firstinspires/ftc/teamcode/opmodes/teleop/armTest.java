@@ -19,24 +19,7 @@ public class armTest extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()) {
-            if (gamepad1.a ) {
-                arm.testExtenderTicks();
-            }
-            if (gamepad1.b ) {
-                arm.testRotatorTicks();
-            }
-            if (gamepad1.right_trigger > 0.1) {
-                arm.extend();
-            }
-            if (gamepad1.left_trigger > 0.1) {
-                arm.retract();
-            }
-            if (gamepad1.dpad_up) {
-                arm.up();
-            }
-            if (gamepad1.dpad_down) {
-                arm.down();
-            }
+          arm.rot0();
 
         }
     }

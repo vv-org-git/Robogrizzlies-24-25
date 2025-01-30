@@ -32,8 +32,7 @@ public class controls {
             samplePipeline.setColor(2);
         }*/
         //Automations
-        /*
-        if (op.gamepad1.left_stick_button) {
+        /*if (op.gamepad1.left_stick_button) {
             robot.arm.basket();
             robot.movement.moveToAsync(-48, 24,-135);
             robot.claw.basket();
@@ -62,14 +61,14 @@ public class controls {
             robot.movement.moveToAsync(x * left, 24,0);
             return;
         }
-        if (op.gamepad1.left_bumper && op.gamepad1.start) {
+        if (op.gamepad1.left_bumper) {
             robot.arm.setExtenderPower(-1);
         }
-        else if (op.gamepad1.right_bumper && op.gamepad1.start ) {
-            robot.arm.retract();
+        else if (op.gamepad1.right_bumper) {
+            robot.arm.setExtenderPower(1);
         }
         else {
-            robot.arm.extend();
+            robot.arm.setExtenderPower(0);
 
         }*/
 
@@ -86,22 +85,38 @@ public class controls {
         if (op.gamepad1.right_trigger > 0.3) {
             robot.claw.bite();
         }
-        if (op.gamepad1.left_trigger > 0.3) {
+        if(op.gamepad1.left_trigger>0.3 && op.gamepad1.left_stick_button) {
+            robot.claw.high_bar_place();
+            op.sleep(100);
             robot.claw.release();
         }
+        else if (op.gamepad1.left_trigger > 0.3) {
+            robot.claw.release();
+        }
+
         if (op.gamepad1.y) {
-            robot.arm.rot1();
+            robot.arm.rot0();
+            robot.claw.reset_x();
+            robot.claw.high_bar();
         }
         if (op.gamepad1.a) {
-            robot.arm.rot2();
+            robot.arm.rot1();
+            robot.claw.reset_x();
+            robot.claw.basket();
         }
         if (op.gamepad1.x) {
-
-            robot.arm.rot0();
+            robot.arm.rot2();
+            robot.claw.zUp();
+            robot.claw.rotate_x_right();
+            robot.claw.release();
         }
         if (op.gamepad1.b) {
             robot.arm.rot3();
-
+            robot.claw.zDown();
+            robot.claw.rotate_x_right();
+            robot.claw.zUp();
+            robot.claw.reset_x();
+            robot.claw.release();
         }
         if (op.gamepad1.dpad_left) {
             robot.claw.rotate_x_left();
@@ -117,17 +132,14 @@ public class controls {
             robot.claw.zDown();
 
         }
-        if(op.gamepad1.right_bumper){
-            robot.arm.extend();
-        }
-        else {
-            robot.arm.setExtenderPower(0);
+        if(op.gamepad1.left_bumper && op.gamepad1.right_bumper){
+            robot.arm.retract_reset();
         }
         if(op.gamepad1.left_bumper){
-            robot.arm.setExtenderPower(-1);
+            robot.arm.setExtenderPower(1);
         }
-        else {
-            robot.arm.setExtenderPower(0);
+        if(op.gamepad1.right_bumper){
+            robot.arm.setExtenderPower(-1);
         }
 
         //Precise Control

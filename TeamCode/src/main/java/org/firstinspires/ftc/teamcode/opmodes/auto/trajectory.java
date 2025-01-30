@@ -9,11 +9,11 @@ public class trajectory {
     public trajectory(){
         steps = new ArrayList<Runnable>();
     }
-
     public void add(Runnable r) {
         steps.add(r);
     }
     public void run() {
+
         for (Runnable act : steps) {
             act.run();
         }

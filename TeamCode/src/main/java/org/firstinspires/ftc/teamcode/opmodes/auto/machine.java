@@ -10,6 +10,7 @@ public class machine {
 
     public void run(boolean left, robot robot, paths path) {
         l.waitForStart();
+        boolean done = false;
 
 
         int n_states = path.states.size();
