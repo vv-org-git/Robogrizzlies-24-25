@@ -6,11 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Config
 public class arm {
-    utility_motor extender;
-    utility_motor rotator;
+    public utility_motor extender;
+    public utility_motor extender312;
+    public utility_motor rotator;
 
     public static boolean extender_dir = true;
-    public static boolean rotator_dir = true;
+    public static boolean rotator_dir = false;
+    public static double motor_312_pow = 117/312;
     public static int max_height = 60;
     public static int mid_height = 60;
     public static double basket_height = 54;
@@ -36,12 +38,19 @@ public class arm {
 
     public arm(LinearOpMode l) {
         extender = new utility_motor(l.hardwareMap, "extender", extender_dir);
+        extender312 = new utility_motor(l.hardwareMap, "extender2", extender_dir);
+
         rotator = new utility_motor(l.hardwareMap, "rotator", rotator_dir);
     }
 
     public void up(){rotator.setPlace((int) (max_rotation * ticks_per_degree), 0.5);}
     public void down(){rotator.setPlace(0, 0.5);}
-    public void extend() {extender.setPlace(max_extension, 1);}
+    public void extend() {
+        extender.setPlace(max_extension, 1);
+        extender312.setPlace(max_extension, motor_312_pow);
+
+
+    }
 
     //useless function
     public void extend_mid() {extender.setPlace((int) (mid_height * ticks_per_inch_ex), 1);}
@@ -78,28 +87,42 @@ public class arm {
     public boolean keep_arm_under_limit(){
         return !(extender.get_pos() * 1.1 >= arm_const);
     }
+    public static double amount2 = -3;
 
+    public void ground_pick_up(){
+        rotator.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.3);
+    }
     //go to 45
+    public static double rotNegC = 0;
+
+    public void rotNeg(){
+        rotator.setPlace((int) (rotNegC * ticks_per_degree), 0.3);
+    }
+    public static double rot0C = 0;
+
     public void rot0(){
-        double amount1 = 45;
-        rotator.setPlace((int) ((amount1 + offset) * ticks_per_degree), 0.3);
+        rotator.setPlace((int) (rot0C * ticks_per_degree), 0.3);
     }
     //make it go to 0 deg
+
+    public static double rot1C = 0;
     public void rot1(){
-        double amount1 = 80;
-        rotator.setPlace((int) ((amount1+offset)* ticks_per_degree), 0.3);
+        rotator.setPlace((int) (rot1C * ticks_per_degree), 0.3);
     }
     //go to 115 deg
+    public static double rot2C = 0;
     public void rot2(){
-        double amount2 = 150;
-        rotator.setPlace((int) ((amount2 + offset) * ticks_per_degree), 0.3);
+        rotator.setPlace((int) (rot2C * ticks_per_degree), 0.3);
     }
     //go all the way back
 
-    public void retract() {extender.setPlace(0, 1);}
+    public void retract() {
+        extender.setPlace(0, 1);
+        extender312.setPlace(0, motor_312_pow);
+    }
+    public static double rot3C = 0;
     public void rot3(){
-        double amount3 = 10;
-        rotator.setPlace((int) ((amount3+offset) * ticks_per_degree), 0.3);
+        rotator.setPlace((int) (rot3C * ticks_per_degree), 0.3);
     }
     public void retract_negative(){
         rotator.setPlace(-3500, -0.7);

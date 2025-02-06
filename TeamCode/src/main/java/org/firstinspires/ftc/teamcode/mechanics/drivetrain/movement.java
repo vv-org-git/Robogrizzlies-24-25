@@ -9,6 +9,8 @@ import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker.motionProfiling;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.pathmaker.pathmaker;
 @Config
 public class movement {
@@ -20,6 +22,10 @@ public class movement {
     public wheel br;
     LinearOpMode li;
 
+
+    public double x_pow_t = 0.0;
+    public double y_pow_t = 0.0;
+    public double h_pow_t = 0.0;
 
     public static double err = 0.99;
     public static double break_constant = 15.0;
@@ -44,7 +50,9 @@ public class movement {
     PIDEx pid_controller_X;
     PIDEx pid_controller_Y;
     PIDEx pid_controller_R;
+    public motionProfiling motion_profiler;
 
+    public double debug3 = 0;
     public movement(LinearOpMode l, double x, double y, double z ) {
         li = l;
         l.telemetry.addData("movement", "movement");
@@ -73,6 +81,8 @@ public class movement {
                 PIDConstants.lowPassGainR);
         pid_controller_R = new PIDEx(coefficientsR);
 
+        motion_profiler = new motionProfiling();
+        motion_profiler.debug = 100;
     }
 
     public boolean is_busy(){
@@ -97,14 +107,38 @@ public class movement {
         bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
         br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
     }
-    public void moveAuto(double l_x, double l_y, double r_x){
-        double horizontal = l_x;
-        double vertical = -l_y;
-        double turn =  r_x;
-        fl.setPower((vertical - horizontal - turn));
-        fr.setPower((vertical - horizontal + turn));
-        bl.setPower((vertical + horizontal + turn));
-        br.setPower((vertical + horizontal - turn));
+    public void moveAuto(double vertical, double horizontal, double turn){
+
+        li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
+        li.telemetry.addData("fr", (vertical - horizontal + turn)*FR_PERCENT*power);
+        li.telemetry.addData("bl", (vertical + horizontal + turn)*BL_PERCENT*power);
+        li.telemetry.addData("br", (vertical - horizontal - turn)*BR_PERCENT*power);
+        x_pow_t = horizontal;
+        y_pow_t = vertical;
+        h_pow_t = turn;
+
+
+        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
+        fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
+        bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
+        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
+    }
+    public void moveAuto1(double vertical, double horizontal, double turn){
+
+
+        debug3 = turn;
+        x_pow_t = horizontal;
+        y_pow_t = vertical;
+        h_pow_t = turn;
+
+
+        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
+        fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
+        bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
+        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
+    }
+    public double largest(double a, double b, double c) {
+        return Math.max(Math.max(Math.abs(a), Math.abs(b)), Math.abs(c));
     }
     public void moveAutoTest(double l_x, double l_y, double r_x){
         double horizontal = l_x;
@@ -379,6 +413,7 @@ public class movement {
     public double eIy = 0;
     public double prevErry = 0;
     public long iTime = 0;
+    public double debug2 = 0;
 
     public void resetMovement() {
         iTime = System.currentTimeMillis();
@@ -388,7 +423,7 @@ public class movement {
         prevErrx = 0;
         prevErry = 0;
         prevErrh = 0;
-
+        resetPID();
     }
 
     public void moveToAsyncPIDCustomXY(double targetX, double targetY) {
@@ -584,6 +619,132 @@ public class movement {
         // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
         move(x_pow, y_pow, 0);
     }
+    public void moveToAsyncCustom(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        double currentH = p.getHeading(AngleUnit.DEGREES);
+
+        if (closeEnough(currentX, targetX, currentY, targetY)) {
+            resetPID();
+            return;
+        }
+        double x_pow = pid_controller_X.calculate(targetX, currentX);
+        double y_pow = pid_controller_Y.calculate(targetY, currentY);
+        double h_pow = pid_controller_R.calculate(targetH, currentH);
 
 
+        double x_pow1 = motion_profiler.trapezoid(targetX - currentX);
+        double y_pow1 = motion_profiler.trapezoid(targetY - currentY);
+        double h_pow1 = motion_profiler.trapezoidH(targetH - currentH);
+
+
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        move(x_pow * PIDConstants.pidXSaturation + x_pow1 * (1 - PIDConstants.pidXSaturation), y_pow * PIDConstants.pidYSaturation + y_pow1 * (1 - PIDConstants.pidYSaturation), h_pow * PIDConstants.pidHSaturation + h_pow1 * (1 - PIDConstants.pidHSaturation));
+    }
+    public void resetPID() {
+        PIDCoefficientsEx coefficientsX = new PIDCoefficientsEx(PIDConstants.KiX,PIDConstants.KpX,PIDConstants.KdX,PIDConstants.integralSumMaxX,
+                PIDConstants.stability_threshX,
+                PIDConstants.lowPassGainX);
+        pid_controller_X = new PIDEx(coefficientsX);
+        PIDCoefficientsEx coefficientsY = new PIDCoefficientsEx(PIDConstants.KiY,PIDConstants.KpY,PIDConstants.KdY,PIDConstants.integralSumMaxY,
+                PIDConstants.stability_threshY,
+                PIDConstants.lowPassGainY);
+        pid_controller_Y = new PIDEx(coefficientsY);
+        PIDCoefficientsEx coefficientsR = new PIDCoefficientsEx(PIDConstants.KiR,PIDConstants.KpR,PIDConstants.KdR,PIDConstants.integralSumMaxR,
+                PIDConstants.stability_threshR,
+                PIDConstants.lowPassGainR);
+        pid_controller_R = new PIDEx(coefficientsR);
+        motion_profiler.elapsedTime = -1;
+    }
+
+    public void pidTuneX(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        if (closeEnough(currentX, targetX, 0, 0)) {
+            resetPID();
+            return;
+        }
+        double x_pow = pid_controller_X.calculate(targetX, currentX);
+
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        moveAuto1(x_pow, 0, 0);
+    }
+    public void pidTuneY(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentY = p.getY(DistanceUnit.INCH);
+        if (closeEnough(0, 0, currentY, targetY)) {
+            resetPID();
+            return;
+        }
+        double y_pow = pid_controller_Y.calculate(targetY, currentY);
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        moveAuto(0, y_pow, 0);
+    }
+    public void pidTuneH(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentH = p.getHeading(AngleUnit.DEGREES);
+        if (closeEnough(0, 0, currentH, targetH)) {
+            resetPID();
+            return;
+        }
+        double r_pow = pid_controller_R.calculate(targetH, currentH);
+
+
+        // Return the velocities as an array [xVelocity, yVelocity, headingVelocity]
+        moveAuto(0, 0, r_pow);
+    }
+    public double error = 0;
+    public void tuneMotionProfileX(double targetX) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+
+        double x_pow = motion_profiler.trapezoid(targetX - currentX);
+        error = targetX - currentX;
+        debug2 = x_pow;
+        moveAuto1(x_pow, 0, 0);
+    }
+
+    public void tuneMotionProfileXY(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+
+        double x_pow = motion_profiler.trapezoid(targetX - currentX);
+        double y_pow = motion_profiler.trapezoid(targetY - currentY);
+
+        moveAuto(x_pow, y_pow, 0);
+    }
+
+    public void tuneMotionProfileXYH(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        double currentH = p.getHeading(AngleUnit.DEGREES);
+        double x_pow = 0.0;
+        double y_pow = 0.0;
+        double h_pow = 0.0;
+
+        if (closeEnough(targetX, currentX)){
+            x_pow = motion_profiler.trapezoid(targetX - currentX);
+        }
+        if (closeEnough(targetY, currentY)){
+            y_pow = motion_profiler.trapezoid(targetY - currentY);
+        }
+        if (closeEnough(targetH, currentH)){
+            h_pow = motion_profiler.trapezoid(targetH - currentH);
+        }
+
+        moveAuto(x_pow, y_pow, h_pow);
+    }
 }

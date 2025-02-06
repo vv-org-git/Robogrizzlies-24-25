@@ -99,6 +99,9 @@ public class controls {
             robot.claw.reset_x();
             robot.claw.high_bar();
         }
+        if (op.gamepad1.y && op.gamepad1.start) {
+            robot.ground_pick_up_parallel();
+        }
         if (op.gamepad1.a) {
             robot.arm.rot1();
             robot.claw.reset_x();

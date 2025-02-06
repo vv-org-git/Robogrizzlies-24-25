@@ -24,6 +24,32 @@ public class paths {
 
         states.add(t);
     }
+    public void tune_pid(String direction) {
+        trajectory t = new trajectory();
+        if (direction == "X") {
+            t.add(() -> robot.movement.pidTuneX(24, 0,0));
+        }
+        if (direction == "Y") {
+            t.add(() -> robot.movement.pidTuneY(0, 24,0));
+        }
+        t.add(() -> robot.movement.pidTuneH(0, 0,90));
+
+
+        states.add(t);
+    }
+    public void tune_motion(String direction) {
+        trajectory t = new trajectory();
+        if (direction == "X") {
+            t.add(() -> robot.movement.tuneMotionProfileX(24));
+        }
+        if (direction == "Y") {
+            t.add(() -> robot.movement.tuneMotionProfileXYH(0, 24,0));
+        }
+        t.add(() -> robot.movement.tuneMotionProfileXYH(0, 0,90));
+
+
+        states.add(t);
+    }
     public void place_specimen_test() {
         trajectory t = new trajectory();
         t.add(() -> robot.movement.moveToAsyncPID(0, specimen_forward, 0));

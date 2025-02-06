@@ -30,6 +30,8 @@ public class PIDConstants {
     public static double lowPassGainR = 1;
 
 
-
+    public static double pidXSaturation = 0.1;
+    public static double pidYSaturation = 0.1;
+    public static double pidHSaturation = 0.1;
 
 }

@@ -50,7 +50,15 @@ public class robot {
 
         return (this.movement.is_busy() || this.arm.isBusy() || busy);
     }
+    public static double low_angle = 70;
+    public static double high_angle = 70;
 
+
+    public void ground_pick_up_parallel() {
+        arm.rotNeg();
+        claw.groundPickUp();
+        claw.reset_x();
+    }
     public void sleep(long ms) {
         if (set_sleep == -1) {
             set_sleep = System.currentTimeMillis() + ms;

@@ -92,6 +92,10 @@ public class claw {
     public void zDown() {
         z_servo.setPosition(z_down);
     }
+    public static double z_ground_pick_up_pos = 0.1;
+    public void groundPickUp() {
+        z_servo.setPosition(z_ground_pick_up_pos);
+    }
 
     public void reset_x() {x_servo.setPosition(x_center);}
 
