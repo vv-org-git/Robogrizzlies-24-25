@@ -21,7 +21,6 @@ public class paths {
         t.add(() -> robot.arm.rot2());
         t.add(() -> robot.claw.zUp());
         t.add(() -> robot.claw.release());
-
         states.add(t);
     }
     public void tune_pid(String direction) {
@@ -39,15 +38,13 @@ public class paths {
     }
     public void tune_motion(String direction) {
         trajectory t = new trajectory();
-        if (direction == "X") {
+        if (direction.equals("X")) {
             t.add(() -> robot.movement.tuneMotionProfileX(24));
         }
-        if (direction == "Y") {
+        else if (direction.equals("Y")) {
             t.add(() -> robot.movement.tuneMotionProfileXYH(0, 24,0));
         }
-        t.add(() -> robot.movement.tuneMotionProfileXYH(0, 0,90));
-
-
+        else {t.add(() -> robot.movement.tuneMotionProfileXYH(0, 0,90));}
         states.add(t);
     }
     public void place_specimen_test() {
@@ -141,9 +138,9 @@ public class paths {
     }
     public void move_ground_sample_inner_right() {
         trajectory t = new trajectory();
-        t.add(() -> robot.arm.ground());
+        t.add(() -> robot.arm.rot0());
         t.add(() -> robot.claw.release());
-        t.add(() -> robot.claw.ground_pick_up());
+        t.add(() -> robot.claw.zDown());
         t.add(() -> robot.movement.moveToAsync(48, 24,0));
         states.add(t);
     }
@@ -197,7 +194,7 @@ public class paths {
     }
     public void place_block_observation() {
         trajectory t = new trajectory();
-        t.add(() -> robot.arm.reverse_ground());
+        t.add(() -> robot.arm.reverse_ground()); //speaking of which this doesn't fit in bounds
         t.add(() -> robot.claw.reset_z());
 
         states.add(t);
@@ -224,8 +221,9 @@ public class paths {
         states.add(t);
     }
     public void release() {
+        //release bites?
         trajectory t = new trajectory();
-        t.add(() -> robot.claw.bite());
+        t.add(() -> robot.claw.release());
         states.add(t);
     }
     public void retract() {

@@ -37,8 +37,8 @@ public class arm {
 
 
     public arm(LinearOpMode l) {
-        extender = new utility_motor(l.hardwareMap, "extender", extender_dir);
-        extender312 = new utility_motor(l.hardwareMap, "extender2", extender_dir);
+        extender = new utility_motor(l.hardwareMap, "extender", false);
+        extender312 = new utility_motor(l.hardwareMap, "extender2", true);
 
         rotator = new utility_motor(l.hardwareMap, "rotator", rotator_dir);
     }
@@ -98,19 +98,19 @@ public class arm {
     public void rotNeg(){
         rotator.setPlace((int) (rotNegC * ticks_per_degree), 0.3);
     }
-    public static double rot0C = 0;
+    public static double rot0C = 170;
 
     public void rot0(){
         rotator.setPlace((int) (rot0C * ticks_per_degree), 0.3);
     }
     //make it go to 0 deg
 
-    public static double rot1C = 0;
+    public static double rot1C = 70;
     public void rot1(){
         rotator.setPlace((int) (rot1C * ticks_per_degree), 0.3);
     }
     //go to 115 deg
-    public static double rot2C = 0;
+    public static double rot2C = 130;
     public void rot2(){
         rotator.setPlace((int) (rot2C * ticks_per_degree), 0.3);
     }
@@ -138,6 +138,14 @@ public class arm {
         extender.reset();
     }
     public boolean isBusy() {return (extender.getPower() > 0 || rotator.getPower() > 0);}
+    public void extend_w_power(){
+        if(extender.get_pos() >= max_extension){
+            return;
+        }
+        extender.setPower(1);
+        extender312.setPower(motor_312_pow);
+
+    }
 }
 
 

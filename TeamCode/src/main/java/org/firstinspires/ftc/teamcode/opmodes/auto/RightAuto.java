@@ -29,6 +29,8 @@ public class RightAuto extends LinearOpMode {
 
         //cycle specimens
         path.claw_specimen_pick_up();
+        machine.l.sleep(55);
+        //TODO: SLEEP??!?!?!? (unless its already there, but how do we know its gonna be there, sleep at least for the first one)
         path.place_specimen_2(4);
         path.release();
         path.claw_specimen_pick_up();

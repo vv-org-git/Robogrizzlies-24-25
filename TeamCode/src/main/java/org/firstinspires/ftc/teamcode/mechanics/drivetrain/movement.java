@@ -91,38 +91,23 @@ public class movement {
 
 
     public void move(double l_x, double l_y, double r_x){
-        double horizontal = l_x;
-        double vertical = -l_y;
-        double turn =  r_x;
-        li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
-        li.telemetry.addData("fr", (vertical - horizontal + turn)*FR_PERCENT*power);
-        li.telemetry.addData("bl", (vertical + horizontal + turn)*BL_PERCENT*power);
-        li.telemetry.addData("br", (vertical - horizontal - turn)*BR_PERCENT*power);
+        double horizontal24 = -l_x; //negate x to make opposite movement in the x direction?
+        double vertical24 = -l_y;
+        double turn24 =  r_x;
+        li.telemetry.addData("fl", (vertical24 + horizontal24 - turn24)*FL_PERCENT*power);
+        li.telemetry.addData("fr", (vertical24 - horizontal24 + turn24)*FR_PERCENT*power);
+        li.telemetry.addData("bl", (vertical24 + horizontal24 + turn24)*BL_PERCENT*power);
+        li.telemetry.addData("br", (vertical24 - horizontal24 - turn24)*BR_PERCENT*power);
 
 
 
 
-        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
-        fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
-        bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
-        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
+        fl.setPower((vertical24 + horizontal24 - turn24)*FL_PERCENT*power);
+        fr.setPower((vertical24 - horizontal24 + turn24)*FR_PERCENT*power);
+        bl.setPower((vertical24 + horizontal24 + turn24)*BL_PERCENT*power);
+        br.setPower((vertical24 - horizontal24 - turn24)*BR_PERCENT*power);
     }
-    public void moveAuto(double vertical, double horizontal, double turn){
 
-        li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
-        li.telemetry.addData("fr", (vertical - horizontal + turn)*FR_PERCENT*power);
-        li.telemetry.addData("bl", (vertical + horizontal + turn)*BL_PERCENT*power);
-        li.telemetry.addData("br", (vertical - horizontal - turn)*BR_PERCENT*power);
-        x_pow_t = horizontal;
-        y_pow_t = vertical;
-        h_pow_t = turn;
-
-
-        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
-        fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
-        bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
-        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
-    }
     public void moveAuto1(double vertical, double horizontal, double turn){
 
 
@@ -507,14 +492,53 @@ public class movement {
         }
         return x1+y1 == 2;
     }
+    public void moveAuto(double vertical, double horizontal, double turn){
+
+        li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
+        li.telemetry.addData("fr", (vertical - horizontal + turn)*FR_PERCENT*power);
+        li.telemetry.addData("bl", (vertical + horizontal + turn)*BL_PERCENT*power);
+        li.telemetry.addData("br", (vertical - horizontal - turn)*BR_PERCENT*power);
+        x_pow_t = horizontal;
+        y_pow_t = vertical;
+        h_pow_t = turn;
+
+
+        fl.setPower((vertical + horizontal - turn)*FL_PERCENT*power);
+        fr.setPower((vertical - horizontal + turn)*FR_PERCENT*power);
+        bl.setPower((vertical + horizontal + turn)*BL_PERCENT*power);
+        br.setPower((vertical - horizontal - turn)*BR_PERCENT*power);
+    }
     private boolean closeEnough(double x, double x_f) {
         int x1 = 1;
-
-        if (x_f * allowed_x_err > x) {
+        //x_f *
+        if (x_f * allowed_x_err >= x) {
             x1 = -1;
         }
-        return x1 == 1;
+        return (x1 == 1);
     }
+    public void tuneMotionProfileXYH(double targetX, double targetY, double targetH) {
+        odo.bulkUpdate();
+        Pose2D p = odo.getPosition();
+        double currentX = p.getX(DistanceUnit.INCH);
+        double currentY = p.getY(DistanceUnit.INCH);
+        double currentH = p.getHeading(AngleUnit.DEGREES);
+        double x_pow = 0.0;
+        double y_pow = 0.0;
+        double h_pow = 0.0;
+
+        if (closeEnough(targetX, currentX)){
+            x_pow = motion_profiler.trapezoid(targetX - currentX);
+        }
+        if (closeEnough(targetY, currentY)){
+            y_pow = motion_profiler.trapezoid(targetY - currentY);
+        }
+        if (closeEnough(targetH, currentH)){
+            h_pow = motion_profiler.trapezoid(targetH - currentH);
+        }
+
+        moveAuto(x_pow, y_pow, h_pow);
+    }
+
 
     // Helper function to normalize an angle to the range [-180, 180]
     private double normalizeAngle(double angle) {
@@ -725,26 +749,5 @@ public class movement {
         moveAuto(x_pow, y_pow, 0);
     }
 
-    public void tuneMotionProfileXYH(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
-        Pose2D p = odo.getPosition();
-        double currentX = p.getX(DistanceUnit.INCH);
-        double currentY = p.getY(DistanceUnit.INCH);
-        double currentH = p.getHeading(AngleUnit.DEGREES);
-        double x_pow = 0.0;
-        double y_pow = 0.0;
-        double h_pow = 0.0;
 
-        if (closeEnough(targetX, currentX)){
-            x_pow = motion_profiler.trapezoid(targetX - currentX);
-        }
-        if (closeEnough(targetY, currentY)){
-            y_pow = motion_profiler.trapezoid(targetY - currentY);
-        }
-        if (closeEnough(targetH, currentH)){
-            h_pow = motion_profiler.trapezoid(targetH - currentH);
-        }
-
-        moveAuto(x_pow, y_pow, h_pow);
-    }
 }
