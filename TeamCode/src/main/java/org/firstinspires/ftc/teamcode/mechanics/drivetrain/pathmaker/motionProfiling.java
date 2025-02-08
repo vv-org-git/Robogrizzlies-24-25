@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class motionProfiling {
     public static double maxAcceleration = 92.88;
-    public double maxVelocity = 92.88;
+    public static double maxVelocity = 92.88;
     public static double maxAccelerationH = 1.0;
     public double maxVelocityH = 1.0;
     public double elapsedTime = -1;

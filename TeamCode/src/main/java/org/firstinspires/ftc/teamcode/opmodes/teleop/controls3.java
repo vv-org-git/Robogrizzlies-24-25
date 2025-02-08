@@ -23,7 +23,7 @@ public class controls3 {
         samplePipeline = s;
     }
     public void action() {
-        robot.movement.odo.bulkUpdate();
+        robot.movement.odo.update();
 
         /*
         if (op.gamepad2.a) {

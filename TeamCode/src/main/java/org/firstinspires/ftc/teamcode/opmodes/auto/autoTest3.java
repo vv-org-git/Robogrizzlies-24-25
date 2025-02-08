@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.robot.robot;
 
 @Autonomous
@@ -24,11 +24,14 @@ public class autoTest3 extends LinearOpMode {
         paths path = new paths(r);
         path.tune_motion(direction);
         r.movement.resetPID();
+        r.movement.odo.update();
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Telemetry dashboardTelemetry = dashboard.getTelemetry();
         path.states.get(0).run();
         while (!isStopRequested()) {
+            r.movement.odo.update();
+
             Pose2D p =  r.movement.odo.getPosition();
             double x_f = p.getX(DistanceUnit.INCH);
             double y_f = p.getY(DistanceUnit.INCH);

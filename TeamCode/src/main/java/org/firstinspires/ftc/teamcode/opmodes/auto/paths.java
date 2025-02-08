@@ -24,28 +24,57 @@ public class paths {
 
         states.add(t);
     }
+    public void place_basket() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.arm.maxExtend());
+        t.add(() -> robot.arm.rot1());
+        t.add(() -> robot.claw.reset_x());
+        t.add(() -> robot.claw.bite());
+        t.add(() -> robot.claw.zDown());
+
+        states.add(t);
+    }
+    public void reset_arm() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.arm.rot3());
+        t.add(() -> robot.arm.retract());
+        t.add(() -> robot.claw.reset_x());
+        t.add(() -> robot.claw.zDown());
+
+        states.add(t);
+    }
+    public void drop() {
+        trajectory t = new trajectory();
+        t.add(() -> robot.claw.release());
+
+        states.add(t);
+    }
     public void tune_pid(String direction) {
         trajectory t = new trajectory();
-        if (direction == "X") {
+        if (direction.equals("X")) {
             t.add(() -> robot.movement.pidTuneX(24, 0,0));
         }
-        if (direction == "Y") {
+        else if (direction.equals("Y")) {
             t.add(() -> robot.movement.pidTuneY(0, 24,0));
         }
-        t.add(() -> robot.movement.pidTuneH(0, 0,90));
-
+        else {
+            t.add(() -> robot.movement.pidTuneH(0, 0,90));
+        }
 
         states.add(t);
     }
     public void tune_motion(String direction) {
         trajectory t = new trajectory();
-        if (direction == "X") {
+        if (direction.equals("X")) {
             t.add(() -> robot.movement.tuneMotionProfileX(24));
         }
-        if (direction == "Y") {
+        else if (direction.equals("Y")) {
             t.add(() -> robot.movement.tuneMotionProfileXYH(0, 24,0));
         }
-        t.add(() -> robot.movement.tuneMotionProfileXYH(0, 0,90));
+        else {
+            t.add(() -> robot.movement.tuneMotionProfileXYH(0, 0,90));
+
+        }
 
 
         states.add(t);

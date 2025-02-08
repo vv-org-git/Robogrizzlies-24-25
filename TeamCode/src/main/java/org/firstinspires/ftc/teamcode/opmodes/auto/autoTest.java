@@ -12,7 +12,9 @@ public class autoTest extends LinearOpMode {
         machine machine = new machine(this);
         robot r = new robot(this, 0, 0,0, false);
         paths path = new paths(r);
-        path.place_specimen_1();
+        path.place_basket();
+        path.release();
+        path.reset_arm();
 
 
         machine.run( true, r, path);

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.mechanics.drivetrain;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.Pose2D;
 
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
@@ -91,7 +91,7 @@ public class movement {
 
 
     public void move(double l_x, double l_y, double r_x){
-        double horizontal = l_x;
+        double horizontal = -l_x;
         double vertical = -l_y;
         double turn =  r_x;
         li.telemetry.addData("fl", (vertical + horizontal - turn)*FL_PERCENT*power);
@@ -166,7 +166,7 @@ public class movement {
 
     }
     public void moveToAsync4(double x, double y, double heading) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double y_f = p.getY(DistanceUnit.INCH);
@@ -193,7 +193,7 @@ public class movement {
         }
     }
     public void moveToAsync2(double x, double y, double heading) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double y_f = p.getY(DistanceUnit.INCH);
@@ -240,7 +240,7 @@ public class movement {
         }
     }
     public void moveToAsync(double x, double y, double h) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double y_f = p.getY(DistanceUnit.INCH);
@@ -292,7 +292,7 @@ public class movement {
     }
     public void moveToAsyncX(double x) {
         call_num += 1;
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double x_velocity = 0;
@@ -316,7 +316,7 @@ public class movement {
 
     }
     public void moveToAsyncY(double y) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double y_f = p.getY(DistanceUnit.INCH);
         double y_velocity = 0;
@@ -342,7 +342,7 @@ public class movement {
 
     }
     public void rotate(double y) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double y_f = p.getHeading(AngleUnit.DEGREES);
         double h_velocity = 0;
@@ -368,7 +368,7 @@ public class movement {
 
     }
     public void moveToAsyncPID(double targetX, double targetY, double targetHeading) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);
@@ -427,7 +427,7 @@ public class movement {
     }
 
     public void moveToAsyncPIDCustomXY(double targetX, double targetY) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);
@@ -456,7 +456,7 @@ public class movement {
 
 
     public void moveToAsyncPIDCustomH(double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentH = p.getHeading(AngleUnit.DEGREES);
         if (closeEnough(currentH, targetH)) {
@@ -523,7 +523,7 @@ public class movement {
         return angle;
     }
     public void moveToAsync(double x, double y) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         double y_f = p.getY(DistanceUnit.INCH);
@@ -563,7 +563,7 @@ public class movement {
         move(x_velocity, y_velocity, 0);
     }
     public void moveToAsyncHeading(double h) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double h_f = p.getHeading(AngleUnit.DEGREES);
         double h_velocity = 0;
@@ -589,7 +589,7 @@ public class movement {
 
     public void moveToAsync3() {
         double x = 12.0;
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double x_f = p.getX(DistanceUnit.INCH);
         li.telemetry.addData("vx1", x_f);
@@ -607,7 +607,7 @@ public class movement {
     }
 
     public void moveToAsyncPIDXY(double targetX, double targetY) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);
@@ -620,7 +620,7 @@ public class movement {
         move(x_pow, y_pow, 0);
     }
     public void moveToAsyncCustom(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);
@@ -661,7 +661,7 @@ public class movement {
     }
 
     public void pidTuneX(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         if (closeEnough(currentX, targetX, 0, 0)) {
@@ -675,7 +675,7 @@ public class movement {
         moveAuto1(x_pow, 0, 0);
     }
     public void pidTuneY(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentY = p.getY(DistanceUnit.INCH);
         if (closeEnough(0, 0, currentY, targetY)) {
@@ -688,7 +688,7 @@ public class movement {
         moveAuto(0, y_pow, 0);
     }
     public void pidTuneH(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentH = p.getHeading(AngleUnit.DEGREES);
         if (closeEnough(0, 0, currentH, targetH)) {
@@ -703,7 +703,7 @@ public class movement {
     }
     public double error = 0;
     public void tuneMotionProfileX(double targetX) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
 
@@ -714,7 +714,7 @@ public class movement {
     }
 
     public void tuneMotionProfileXY(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);
@@ -726,7 +726,7 @@ public class movement {
     }
 
     public void tuneMotionProfileXYH(double targetX, double targetY, double targetH) {
-        odo.bulkUpdate();
+        odo.update();
         Pose2D p = odo.getPosition();
         double currentX = p.getX(DistanceUnit.INCH);
         double currentY = p.getY(DistanceUnit.INCH);

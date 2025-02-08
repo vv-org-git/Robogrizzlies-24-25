@@ -6,8 +6,8 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver.Pose2D;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.mechanics.drivetrain.movement;
 
 import org.firstinspires.ftc.teamcode.vision.SampleDetectionRect;
@@ -30,7 +30,7 @@ public class driveTest extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()) {
             telemetry.addData("hello", "helo");
-            movement.odo.bulkUpdate();
+            movement.odo.update();
             Pose2D p = movement.odo.getPosition();
 
             telemetry.addData("x", p.getX(DistanceUnit.INCH));

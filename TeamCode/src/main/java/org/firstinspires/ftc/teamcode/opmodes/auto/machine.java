@@ -24,7 +24,7 @@ public class machine {
             l.telemetry.addData("current_state",current_state);
             l.telemetry.update();
 
-            robot.movement.odo.bulkUpdate();
+            robot.movement.odo.update();
             path.states.get(current_state).run();
             if (!robot.is_busy()) {
                 robot.movement.resetMovement();

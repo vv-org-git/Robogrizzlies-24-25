@@ -19,7 +19,7 @@ public class controls {
         samplePipeline = s;
     }
     public void action() {
-        robot.movement.odo.bulkUpdate();
+        robot.movement.odo.update();
 
         /*
         if (op.gamepad2.a) {
@@ -127,47 +127,39 @@ public class controls {
         if (op.gamepad1.dpad_right) {
             robot.claw.rotate_x_right();
         }
-        if (op.gamepad1.dpad_up) {
+        if(op.gamepad1.dpad_up && op.gamepad1.dpad_down){
+            robot.claw.zMax();
+        }
+        else if (op.gamepad1.dpad_up) {
             robot.claw.zUp();
 
         }
-        if (op.gamepad1.dpad_down) {
+        else if (op.gamepad1.dpad_down) {
             robot.claw.zDown();
 
         }
         if(op.gamepad1.left_bumper && op.gamepad1.right_bumper){
-            robot.arm.retract_reset();
+            robot.arm.extend_w_pow();
         }
         if(op.gamepad1.left_bumper){
-            robot.arm.setExtenderPower(1);
+            robot.arm.retract();
         }
         if(op.gamepad1.right_bumper){
-            robot.arm.setExtenderPower(-1);
+            robot.arm.extend();
+        }
+        if(op.gamepad1.start && op.gamepad1.guide){
+            robot.arm.extend();
         }
 
         //Precise Control
 
-        if (op.gamepad1.guide) {
-            if (op.gamepad1.y) {
-                robot.arm.setRotatorPower(0.8);
-            }
-            else if (op.gamepad1.a) {
-                robot.arm.setRotatorPower(-0.8);
-            }
-            if (op.gamepad1.b) {
-                robot.arm.setExtenderPower(0.8);
-            }
-            else if (op.gamepad1.a) {
-                robot.arm.setExtenderPower(-0.8);
-            }
-
-            if (op.gamepad1.dpad_up) {
-                robot.claw.rotate_z(0.1);
-            }
-            if (op.gamepad1.dpad_up) {
-                robot.claw.rotate_z(-0.1);
-            }
+        /*if (op.gamepad1.guide && op.gamepad1.dpad_down) {
+            robot.arm.HookMechspool();
         }
+        if(op.gamepad1.guide && op.gamepad1.dpad_up){
+            robot.arm.spoolup();
+        }
+         */
     }
 
 }

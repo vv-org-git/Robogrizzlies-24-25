@@ -22,9 +22,10 @@ public class claw {
 
     public static double x_left = 1;
     public static double x_right = 0.5;
+    public static double z_max = 1.0;
 
-    public static double z_up = 1.0;
-    public static double z_down = 0.5;
+    public static double z_up = 0.0;
+    public static double z_down = -0.5;
 
     public static double x_center =0.75;
     public static double z_center = 0.60;
@@ -92,6 +93,8 @@ public class claw {
     public void zDown() {
         z_servo.setPosition(z_down);
     }
+
+    public void zMax() {z_servo.setPosition(z_max);}
     public static double z_ground_pick_up_pos = 0.1;
     public void groundPickUp() {
         z_servo.setPosition(z_ground_pick_up_pos);

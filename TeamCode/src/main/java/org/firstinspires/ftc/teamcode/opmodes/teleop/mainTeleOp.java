@@ -27,13 +27,12 @@ public class mainTeleOp extends LinearOpMode {
         //robot.webcam.startStreaming(samplePipeline);
         long init_time = System.currentTimeMillis();
         controls control = new controls(robot, this,init_time, samplePipeline);
-
+        robot.arm.rot1();
         //create
         waitForStart();
         robot.claw.release();
         robot.claw.reset_x();
         robot.claw.reset_z();
-        robot.arm.rot0();
 
         while (!isStopRequested()) {
             control.action();
