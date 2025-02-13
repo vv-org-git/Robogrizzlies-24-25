@@ -163,7 +163,7 @@ public class arm {
 
     public void setExtenderPower(double power) {
         extender.setPower(power);
-        extender312.setPower(motor_312_pow);
+        //extender312.setPower(motor_312_pow);
     }
     public void setRotatorPower(double power) {rotator.setPower(power);}
 

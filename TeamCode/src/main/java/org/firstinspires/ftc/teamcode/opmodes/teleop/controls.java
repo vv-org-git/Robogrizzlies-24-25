@@ -142,13 +142,13 @@ public class controls {
             robot.arm.extend_w_pow();
         }
         if(op.gamepad1.left_bumper){
-            robot.arm.retract();
+            robot.arm.setExtenderPower(-1);
         }
         if(op.gamepad1.right_bumper){
-            robot.arm.extend();
+            robot.arm.setExtenderPower(1);
         }
         if(op.gamepad1.start && op.gamepad1.guide){
-            robot.arm.extend();
+            //robot.arm.setExtenderPower(-`);
         }
 
         //Precise Control

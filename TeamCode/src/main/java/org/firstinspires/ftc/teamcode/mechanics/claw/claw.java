@@ -24,8 +24,8 @@ public class claw {
     public static double x_right = 0.5;
     public static double z_max = 1.0;
 
-    public static double z_up = 0.0;
-    public static double z_down = -0.5;
+    public static double z_up = 0.5;
+    public static double z_down = 1;
 
     public static double x_center =0.75;
     public static double z_center = 0.60;

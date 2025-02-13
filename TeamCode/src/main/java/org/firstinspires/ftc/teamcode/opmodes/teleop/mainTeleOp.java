@@ -36,7 +36,6 @@ public class mainTeleOp extends LinearOpMode {
 
         while (!isStopRequested()) {
             control.action();
-
         }
 
 
