@@ -1,3 +1,4 @@
+package org.firstinspires.ftc.teamcode.mech.movement.goBuildaPinPointDriver;
 /*   MIT License
  *   Copyright (c) [2024] [Base 10 Assets, LLC]
  *
@@ -20,21 +21,18 @@
  *   SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode.mechanics.drivetrain.gobuildaPinpointDriver;
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
-import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 import com.qualcomm.robotcore.util.TypeConversion;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -48,7 +46,7 @@ import java.util.Arrays;
         description ="goBILDA® Pinpoint Odometry Computer (IMU Sensor Fusion for 2 Wheel Odometry)"
 )
 
-public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> {
+public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynch> {
 
     private int deviceStatus   = 0;
     private int loopTime       = 0;
@@ -64,33 +62,18 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     private static final float goBILDA_SWINGARM_POD = 13.26291192f; //ticks-per-mm for the goBILDA Swingarm Pod
     private static final float goBILDA_4_BAR_POD    = 19.89436789f; //ticks-per-mm for the goBILDA 4-Bar Pod
 
-    //i2c address of the device
-    public static final byte DEFAULT_ADDRESS = 0x31;
 
-    public GoBildaPinpointDriver(I2cDeviceSynchSimple deviceClient, boolean deviceClientIsOwned) {
+    public GoBildaPinpointDriver(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
         super(deviceClient, deviceClientIsOwned);
 
         this.deviceClient.setI2cAddress(I2cAddr.create7bit(DEFAULT_ADDRESS));
+
         super.registerArmingStateCallback(false);
+        this.deviceClient.engage();
     }
 
-
-    @Override
-    public Manufacturer getManufacturer() {
-        return Manufacturer.Other;
-    }
-
-    @Override
-    protected synchronized boolean doInitialize() {
-        ((LynxI2cDeviceSynch)(deviceClient)).setBusSpeed(LynxI2cDeviceSynch.BusSpeed.FAST_400K);
-        return true;
-    }
-
-    @Override
-    public String getDeviceName() {
-        return "goBILDA® Pinpoint Odometry Computer";
-    }
-
+    //i2c address of the device
+    public static final byte DEFAULT_ADDRESS = 0x31;
 
     //Register map of the i2c device
     private enum Register {
@@ -122,13 +105,13 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
 
     //Device Status enum that captures the current fault condition of the device
     public enum DeviceStatus{
-        NOT_READY                (0),
-        READY                    (1),
-        CALIBRATING              (1 << 1),
+        NOT_READY (0),
+        READY (1),
+        CALIBRATING (1 << 1),
         FAULT_X_POD_NOT_DETECTED (1 << 2),
         FAULT_Y_POD_NOT_DETECTED (1 << 3),
-        FAULT_NO_PODS_DETECTED   (1 << 2 | 1 << 3),
-        FAULT_IMU_RUNAWAY        (1 << 4);
+        FAULT_NO_PODS_DETECTED (1 << 2 | 1 << 3),
+        FAULT_IMU_RUNAWAY (1 << 4);
 
         private final int status;
 
@@ -148,11 +131,6 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
         goBILDA_SWINGARM_POD,
         goBILDA_4_BAR_POD;
     }
-    //enum that captures a limited scope of read data. More options may be added in future update
-    public enum readData {
-        ONLY_UPDATE_HEADING,
-    }
-
 
     /** Writes an int to the i2c device
      @param reg the register to write the int to
@@ -185,7 +163,6 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
      * @param reg the register to read
      * @return the float value stored in that register
      */
-
     private float readFloat(Register reg){
         return byteArrayToFloat(deviceClient.read(reg.bVal,4),ByteOrder.LITTLE_ENDIAN);
     }
@@ -254,30 +231,18 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     /**
      * Call this once per loop to read new data from the Odometry Computer. Data will only update once this is called.
      */
-    public void update(){
+    public void bulkUpdate(){
         byte[] bArr   = deviceClient.read(Register.BULK_READ.bVal, 40);
         deviceStatus  = byteArrayToInt(Arrays.copyOfRange  (bArr, 0, 4),  ByteOrder.LITTLE_ENDIAN);
         loopTime      = byteArrayToInt(Arrays.copyOfRange  (bArr, 4, 8),  ByteOrder.LITTLE_ENDIAN);
         xEncoderValue = byteArrayToInt(Arrays.copyOfRange  (bArr, 8, 12), ByteOrder.LITTLE_ENDIAN);
-        yEncoderValue = byteArrayToInt(Arrays.copyOfRange  (bArr, 12,16), ByteOrder.LITTLE_ENDIAN);
-        xPosition     = byteArrayToFloat(Arrays.copyOfRange(bArr, 16,20), ByteOrder.LITTLE_ENDIAN);
-        yPosition     = byteArrayToFloat(Arrays.copyOfRange(bArr, 20,24), ByteOrder.LITTLE_ENDIAN);
-        hOrientation  = byteArrayToFloat(Arrays.copyOfRange(bArr, 24,28), ByteOrder.LITTLE_ENDIAN);
-        xVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr, 28,32), ByteOrder.LITTLE_ENDIAN);
-        yVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr, 32,36), ByteOrder.LITTLE_ENDIAN);
-        hVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr, 36,40), ByteOrder.LITTLE_ENDIAN);
-    }
-
-    /**
-     * Call this once per loop to read new data from the Odometry Computer. This is an override of the update() function
-     * which allows a narrower range of data to be read from the device for faster read times. Currently ONLY_UPDATE_HEADING
-     * is supported.
-     * @param data GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING
-     */
-    public void update(readData data) {
-        if (data == readData.ONLY_UPDATE_HEADING) {
-            hOrientation = byteArrayToFloat(deviceClient.read(Register.H_ORIENTATION.bVal, 4), ByteOrder.LITTLE_ENDIAN);
-        }
+        yEncoderValue = byteArrayToInt(Arrays.copyOfRange  (bArr, 12, 16),ByteOrder.LITTLE_ENDIAN);
+        xPosition     = byteArrayToFloat(Arrays.copyOfRange(bArr, 16, 20),ByteOrder.LITTLE_ENDIAN);
+        yPosition     = -byteArrayToFloat(Arrays.copyOfRange(bArr, 20, 24),ByteOrder.LITTLE_ENDIAN);
+        hOrientation  = byteArrayToFloat(Arrays.copyOfRange(bArr, 24, 28),ByteOrder.LITTLE_ENDIAN);
+        xVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,28,32),  ByteOrder.LITTLE_ENDIAN);
+        yVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,32,36),  ByteOrder.LITTLE_ENDIAN);
+        hVelocity     = byteArrayToFloat(Arrays.copyOfRange(bArr,36,40),  ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
@@ -313,15 +278,8 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
      * @param yEncoder FORWARD or REVERSED, Y (strafe) pod should increase when the robot is moving left
      */
     public void setEncoderDirections(EncoderDirection xEncoder, EncoderDirection yEncoder){
-        if (xEncoder == EncoderDirection.FORWARD){
-            writeInt(Register.DEVICE_CONTROL,1<<5);
-        }
         if (xEncoder == EncoderDirection.REVERSED) {
             writeInt(Register.DEVICE_CONTROL,1<<4);
-        }
-
-        if (yEncoder == EncoderDirection.FORWARD){
-            writeInt(Register.DEVICE_CONTROL,1<<3);
         }
         if (yEncoder == EncoderDirection.REVERSED){
             writeInt(Register.DEVICE_CONTROL,1<<2);
@@ -515,9 +473,19 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     }
 
 
+    @Override
+    public Manufacturer getManufacturer() {
+        return Manufacturer.Other;
+    }
+
+    @Override
+    protected synchronized boolean doInitialize() {
+        return true;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return "goBILDA® Pinpoint Odometry Computer";
+    }
 
 }
-
-
-
-
