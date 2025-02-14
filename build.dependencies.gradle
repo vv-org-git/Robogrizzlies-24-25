@@ -20,7 +20,7 @@ dependencies {
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
     implementation 'com.tambapps.fft4j:fft4j:2.0'
     implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
-    implementation "com.acmerobotics.roadrunner:ftc:0.1.15"
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.19"
     implementation "com.acmerobotics.roadrunner:core:1.0.1"
     implementation "com.acmerobotics.roadrunner:actions:1.0.1"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.16"
