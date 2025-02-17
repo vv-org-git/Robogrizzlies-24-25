@@ -73,6 +73,9 @@ public class intake {
     public void stop(){
         active_intake.setPower(0);
     }
+    public boolean busy(){
+        return (active_intake.getPower()<0.1);
+    }
 
 
     //Tester Functions

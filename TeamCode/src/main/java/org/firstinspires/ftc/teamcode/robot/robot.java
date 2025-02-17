@@ -25,5 +25,8 @@ public class robot {
             CV = new CV(l);
         }
     }
+    public boolean is_busy(){
+        return (this.intake.busy() || busy || this.movement.is_busy());
+    }
 
 }
