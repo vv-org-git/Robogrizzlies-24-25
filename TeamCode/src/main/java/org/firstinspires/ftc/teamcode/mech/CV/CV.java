@@ -13,10 +13,12 @@ public class CV {
     OpenCvWebcam camera;
     Integer resolution_x = 320;
     Integer resolution_y = 240;
+    LinearOpMode tele;
 
     public CV(LinearOpMode l) {
         int cameraMonitorViewId = l.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", l.hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(l.hardwareMap.get(WebcamName.class, "CV"), cameraMonitorViewId);
+        tele = l;
     }
     public void stream(){
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -35,7 +37,7 @@ public class CV {
             }
         });
         camera.startStreaming(320, 420, OpenCvCameraRotation.UPRIGHT);
-        OpenCvPipeline pipeline = new DetectSample();
+        OpenCvPipeline pipeline = new SampleDetectionEdges(tele.telemetry);
         camera.setPipeline(pipeline);
     }
 }

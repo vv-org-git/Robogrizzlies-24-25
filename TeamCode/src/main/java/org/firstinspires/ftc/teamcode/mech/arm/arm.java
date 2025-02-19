@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.openftc.easyopencv.OpenCvPipeline;
 public class arm {
-    motor bottomJoint;
+    motor bJ;
+    motor tJ;
     Servo LJoint;
     Servo RJoint;
     //this should be angled down at around roughly 45 degree off the ground (should be lower outside than inside)
@@ -33,49 +34,67 @@ public class arm {
     public static int bottom_hanging = 800;
     public static double servo_hanging = 0.4;
     public arm(LinearOpMode l){
-        bottomJoint = new motor(l.hardwareMap, "bottomJoint", false);
-        LJoint = l.hardwareMap.get(Servo.class, "LJoint");
-        RJoint = l.hardwareMap.get(Servo.class, "RJoint"); //Spins Opposite Direction
+        bJ = new motor(l.hardwareMap, "MotorJoint1", false);
+        tJ = new motor(l.hardwareMap, "MotorJoint2", true);
+        LJoint = l.hardwareMap.get(Servo.class, "servoJoint1");
+        RJoint = l.hardwareMap.get(Servo.class, "servoJoint2"); //Spins Opposite Direction
     }
     public void outTank(){
-        bottomJoint.setPlace(bottom_OUTSIDE_intake, 0.3);
+        bJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_OUTSIDE_intake);
         RJoint.setPosition(-servo_OUTSIDE_intake);
     }
     public void inTank(){
-        bottomJoint.setPlace(bottom_WITHIN_intake, 0.3);
+        bJ.setPlace(bottom_WITHIN_intake, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_WITHIN_intake);
         RJoint.setPosition(-servo_WITHIN_intake);
     }
     public void getSpecimen(){
-        bottomJoint.setPlace(bottom_get_specimen, 0.3);
+        bJ.setPlace(bottom_get_specimen, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_get_specimen);
         RJoint.setPosition(-servo_get_specimen);
     }
     public void afterSpecimen(){
-        bottomJoint.setPlace(bottom_after_place_specimen, 0.3);
+        bJ.setPlace(bottom_after_place_specimen, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_after_place_specimen);
         RJoint.setPosition(-servo_after_place_specimen);
     }
     public void placeSpecimen(){
-        bottomJoint.setPlace(bottom_place_specimen, 0.3);
+        bJ.setPlace(bottom_place_specimen, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_place_specimen);
         RJoint.setPosition(-servo_place_specimen);
     }
     public void highBasket(){
-        bottomJoint.setPlace(bottom_basket_eject, 0.3);
+        bJ.setPlace(bottom_basket_eject, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_basket_eject);
         RJoint.setPosition(-servo_basket_eject);
     }
     public void hang(){
-        bottomJoint.setPlace(bottom_hanging, 0.3);
+        bJ.setPlace(bottom_hanging, 0.3);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
         LJoint.setPosition(servo_hanging);
         RJoint.setPosition(-servo_hanging);
     }
     public void setPower(int x){
-        bottomJoint.setPower(x);
+        bJ.setPower(x);
+        tJ.setPlace(bottom_OUTSIDE_intake, 0.3);
+
     }
     public void set0(){
-        bottomJoint.reset();
+        bJ.reset();
+        tJ.reset();
     }
 }

@@ -12,18 +12,13 @@ public class mainTeleOpBLUE extends LinearOpMode {
     robot robot;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new robot(this, AUTO_END_X, AUTO_END_Y, AUTO_END_Z, false);
+        robot = new robot(this, AUTO_END_X, AUTO_END_Y, AUTO_END_Z, false, false);
         long init_time = System.currentTimeMillis();
         controls control = new controls(robot,this, init_time);
         waitForStart();
-        robot.intake.chooseBlue();
         //Initalization goes here
         while (!isStopRequested()) {
             control.action();
-            telemetry.addData("RedValue", robot.intake.rV());
-            telemetry.addData("BlueValue", robot.intake.bV());
-            telemetry.addData("GreenValue", robot.intake.gV());
-            telemetry.addData("AlphaValue", robot.intake.aV());
         }
     }
 }
